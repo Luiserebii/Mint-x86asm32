@@ -69,20 +69,20 @@ test_print:
 	movl $space, 4(%esp)
 	call _strcat
 	
-	#movl \title, 4(%esp)
-	#call _strcat
+	movl \title, 4(%esp)
+	call _strcat
 	
 	movl $fail_info_0x0, 4(%esp)
 	call _strcat
 	
-	#movl \exp, 4(%esp)
-	#call _strcat
+	movl \exp, 4(%esp)
+	call _strcat
 
 	movl $fail_info_0x1, 4(%esp)
 	call _strcat
 
-	#movl \val, 4(%esp)
-	#call _strcat
+	movl \val, 4(%esp)
+	call _strcat
 	
 	movl $fail_info_0x2, 4(%esp)
 	call _strcat
@@ -102,7 +102,34 @@ test_write_fail:
 	movl TEST_WRITE_FAIL_TITLE(%ebp), %eax
 	movl TEST_WRITE_FAIL_VAL(%ebp), %ecx
 	movl TEST_WRITE_FAIL_EXP(%ebp), %edx
-	write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
+	#write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
+	pushl $indent
+	pushl TEST_WRITE_FAIL_BUFF(%ebp)
+	call _strcat
+
+	movl $fail, 4(%esp)
+	call _strcat
+
+	movl $space, 4(%esp)
+	call _strcat
+	
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_0x0, 4(%esp)
+	call _strcat
+	
+	movl %ecx, 4(%esp)
+	call _strcat
+
+	movl $fail_info_0x1, 4(%esp)
+	call _strcat
+
+	movl %edx, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_0x2, 4(%esp)
+	call _strcat
 
 	movl %ebp, %esp
 	popl %ebp
@@ -164,7 +191,6 @@ test_assert_if_end:
 _strcat:
 	pushl %ebp
 	movl %esp, %ebp
-
 
 	# Load dest and src into registers
 	movl 8(%ebp), %eax
