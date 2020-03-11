@@ -36,6 +36,25 @@ dnewline:
 
 .section .text
 
+.macro print buffer:req, buffsize:req
+	movl $4, %eax
+	movl $1, %ebx
+	movl \buffer, %ecx
+	movl \buffersize, %edx
+.endm
+
+.globl test_print
+.type test_print, @function
+test_print:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Print buffer
+	print $buffer, $BUFFER_SIZE
+
+	popl %ebp
+	ret
+
 #
 # test_assert(int32_t cond, char* title)
 #
