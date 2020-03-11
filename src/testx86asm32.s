@@ -56,6 +56,38 @@ test_print:
 	popl %ebp
 	ret
 
+# With this macro, please place title, val, and exp into regs
+# if passing memory references.
+.macro write_fail buffer:req, title:req, val:req, exp:req
+	pushl $indent
+	pushl \buffer
+	call strcat
+
+	movl $fail, 4(%esp)
+	call strcat
+
+	movl $space, 4(%esp)
+	call strcat
+	
+	movl \title, 4(%esp)
+	call strcat
+	
+	movl $fail_info_0x0, 4(%esp)
+	call strcat
+	
+	movl \exp, 4(%esp)
+	call strcat
+
+	movl $fail_info_0x1, 4(%esp)
+	call strcat
+
+	movl \val, 4(%esp)
+	call strcat
+	
+	movl $fail_info_0x2, 4(%esp)
+	call strcat
+.endm
+
 #
 # test_assert(int32_t cond, char* title)
 #
