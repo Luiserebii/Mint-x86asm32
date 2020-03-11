@@ -50,7 +50,11 @@ test_print:
 	movl %esp, %ebp
 
 	# Print buffer
-	print $buffer, $BUFFER_SIZE
+#	print $buffer, $BUFFER_SIZE
+	movl $4, %eax
+	movl $1, %ebx
+	movl $buffer, %ecx
+	movl $BUFFER_SIZE, %edx
 
 	popl %ebp
 	ret
