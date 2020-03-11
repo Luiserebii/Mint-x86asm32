@@ -1,0 +1,8 @@
+string.h
+  [SUCCESS] strlen() returns num
+  [SUCCESS] strlen() returns num 
+  [FAIL] strlen() returns num: Expected true, found "[NUM]"
+
+
+[FAIL] 3 tests failing with 3 tests passing.
+[SUCCESS] All tests ([NUM]) passing with no tests failing.
