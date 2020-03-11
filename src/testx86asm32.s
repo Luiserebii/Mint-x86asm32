@@ -61,33 +61,51 @@ test_print:
 .macro write_fail buffer:req, title:req, val:req, exp:req
 	pushl $indent
 	pushl \buffer
-	call strcat
+	call _strcat
 
 	movl $fail, 4(%esp)
-	call strcat
+	call _strcat
 
 	movl $space, 4(%esp)
-	call strcat
+	call _strcat
 	
 	movl \title, 4(%esp)
-	call strcat
+	call _strcat
 	
 	movl $fail_info_0x0, 4(%esp)
-	call strcat
+	call _strcat
 	
 	movl \exp, 4(%esp)
-	call strcat
+	call _strcat
 
 	movl $fail_info_0x1, 4(%esp)
-	call strcat
+	call _strcat
 
 	movl \val, 4(%esp)
-	call strcat
+	call _strcat
 	
 	movl $fail_info_0x2, 4(%esp)
-	call strcat
+	call _strcat
 .endm
 
+.globl test_write_fail
+.type test_write_fail, @function
+test_write_fail:
+	push %ebp
+	movl %ebp, %esp
+
+	.equ TEST_WRITE_FAIL_BUFF, 8
+	.equ TEST_WRITE_FAIL_TITLE, 12
+	.equ TEST_WRITE_FAIL_VAL, 16
+	.equ TEST_WRITE_FAIL_EXP, 20
+	
+	movl TEST_WRITE_FAIL_TITLE(%ebp), %eax
+	movl TEST_WRITE_FAIL_VAL(%ebp), %ecx
+	movl TEST_WRITE_FAIL_EXP(%ebp), %edx
+	write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
+
+	popl %ebp
+	ret
 #
 # test_assert(int32_t cond, char* title)
 #
