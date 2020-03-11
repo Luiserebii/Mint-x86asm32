@@ -259,11 +259,19 @@ _strlen:
 	# Reserve 0 as place for length
 	movl $0, %eax
 
+	# Use %ebx as string
+	movl 8(%ebp), %ebx
+
 	# while(*s++) { ++len }
 _strlen_while_s:
-	
-	
+	cmpl $0, (%ebx)
+	addl $4. %ebx
+	je _strlen_while_s_end
 
+	incl %eax
+	jmp _strlen_while_s
+
+_strlen_while_s_end:
 
 	popl %ebp
 	ret
