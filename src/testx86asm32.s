@@ -53,8 +53,9 @@ test_print:
 #	print $buffer, $BUFFER_SIZE
 	movl $4, %eax
 	movl $1, %ebx
-	movl $buffer, %ecx
-	movl $BUFFER_SIZE, %edx
+	movl 8(%ebp), %ecx
+	movl 12(%ebp), %edx
+	int $0x80
 
 	popl %ebp
 	ret
