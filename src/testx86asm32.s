@@ -171,6 +171,14 @@ _strcat:
 	
 	# Roll dest up to the null terminator (\0)
 	# while(*dest) { ++dest; }
+_strcat_while_char_src:
+	cmpl $0, (%eax)
+	je _strcat_while_char_src_end
+
+	addl $4, %eax
+	jmp _strcat_while_char_src
+
+_strcat_while_char_src_end:
 
 	# while(*dest++ = *src++)
 	#    ;
