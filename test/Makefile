@@ -6,14 +6,13 @@ main: setup test.o link
 	
 setup:
 	mkdir -p build
-	cd ..
-	make
+	cd .. && make
 
 test.o: 
 	as $(ASFLAGS) src/test.s -o build/test.o 
 
 link: 
-	ld ../build/$(NAME).o build/test.o
+	ld $(LDFLAGS) ../build/$(NAME).o build/test.o
 
 clean:
 	rm -rf build/*

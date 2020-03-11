@@ -98,7 +98,7 @@ test_assert_if_false:
 	movl $fail, -4(%esp)
 	call _strcat
 
-	movl $fail_info_init, -4(%esp)
+	movl $fail_info_0x0, -4(%esp)
 	call _strcat
 	
 	# itoa(cond, buffer, 10)
@@ -109,3 +109,7 @@ test_assert_if_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+.globl _strcat
+.type _strcat, @function
+_strcat:
