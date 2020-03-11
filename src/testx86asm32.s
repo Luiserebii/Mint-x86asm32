@@ -247,3 +247,24 @@ _strcpy_while_set:
 
 	popl %ebp
 	ret
+
+#
+# int strlen(const char* s)
+#
+.type _strlen, @function
+_strlen:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Reserve 0 as place for length
+	movl $0, %eax
+
+	# while(*s++) { ++len }
+_strlen_while_s:
+	
+	
+
+
+	popl %ebp
+	ret
+
