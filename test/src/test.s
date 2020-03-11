@@ -24,6 +24,8 @@ _start:
 	pushl $hello_world
 	call test_print
 
+	movl $0, buffer
+
 	pushl $t_exp
 	pushl $t_val
 	pushl $t_title

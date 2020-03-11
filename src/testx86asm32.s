@@ -69,20 +69,20 @@ test_print:
 	movl $space, 4(%esp)
 	call _strcat
 	
-	movl \title, 4(%esp)
-	call _strcat
+	#movl \title, 4(%esp)
+	#call _strcat
 	
 	movl $fail_info_0x0, 4(%esp)
 	call _strcat
 	
-	movl \exp, 4(%esp)
-	call _strcat
+	#movl \exp, 4(%esp)
+	#call _strcat
 
 	movl $fail_info_0x1, 4(%esp)
 	call _strcat
 
-	movl \val, 4(%esp)
-	call _strcat
+	#movl \val, 4(%esp)
+	#call _strcat
 	
 	movl $fail_info_0x2, 4(%esp)
 	call _strcat
@@ -91,8 +91,8 @@ test_print:
 .globl test_write_fail
 .type test_write_fail, @function
 test_write_fail:
-	push %ebp
-	movl %ebp, %esp
+	pushl %ebp
+	movl %esp, %ebp
 
 	.equ TEST_WRITE_FAIL_BUFF, 8
 	.equ TEST_WRITE_FAIL_TITLE, 12
@@ -104,6 +104,7 @@ test_write_fail:
 	movl TEST_WRITE_FAIL_EXP(%ebp), %edx
 	write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
 
+	movl %ebp, %esp
 	popl %ebp
 	ret
 #
@@ -162,7 +163,7 @@ test_assert_if_end:
 .type _strcat, @function
 _strcat:
 	pushl %ebp
-	movl %ebp, %esp
+	movl %esp, %ebp
 
 
 	# Load dest and src into registers
@@ -200,7 +201,7 @@ _strcat_while_set:
 .type _strcpy, @function
 _strcpy:
 	pushl %ebp
-	movl %ebp, %esp
+	movl %esp, %ebp
 
 	# while(*dest++ = *src++)
 	#    ;
