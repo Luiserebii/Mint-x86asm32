@@ -3,7 +3,7 @@
 #
 
 .section .bss
-	.equ BUFFER_SIZE, 1000
+	.equ BUFFER_SIZE, 10000
 	.lcomm buffer, BUFFER_SIZE
 
 .section .data
@@ -16,11 +16,23 @@ success:
 fail:
 	.ascii "[FAIL]\0"
 
-fail_info_init:
-	.ascii ": \0"
+fail_info_0x0:
+	.ascii ": Expected \"\0"
 
-endl:
+fail_info_0x1:
+	.ascii "\", found \"\0"
+
+fail_info_0x2:
+	.ascii "\"\n\0"
+
+space:
+	.ascii " \0"
+
+newline:
 	.ascii "\n\0"
+
+dnewline:
+	.ascii "\n\n\0"
 
 .section .text
 
