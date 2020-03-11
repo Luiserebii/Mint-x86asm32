@@ -36,11 +36,11 @@ dnewline:
 
 .section .text
 
-.macro print buffer:req, buffersize:req
+.macro print buffer:req, bytes:req
 	movl $4, %eax
 	movl $1, %ebx
 	movl \buffer, %ecx
-	movl \buffersize, %edx
+	movl \bytes, %edx
 	int $0x80
 .endm
 
@@ -51,8 +51,12 @@ test_print:
 	movl %esp, %ebp
 
 	# Print buffer
-	print 8(%ebp), 12(%ebp)
+	pushl 8(%ebp)
+	call _strlen
 
+	print 8(%ebp), %eax
+
+	movl %ebp, %esp
 	popl %ebp
 	ret
 
@@ -265,7 +269,7 @@ _strlen:
 	# while(*s++) { ++len }
 _strlen_while_s:
 	cmpl $0, (%ebx)
-	addl $4. %ebx
+	addl $4, %ebx
 	je _strlen_while_s_end
 
 	incl %eax
