@@ -64,7 +64,7 @@ test_assert_if_false:
 	call _strcat
 
 	movl $fail_info_init, -4(%esp)
-	call_strcat
+	call _strcat
 	
 	# itoa(cond, buffer, 10)
 	# concat is false at the end

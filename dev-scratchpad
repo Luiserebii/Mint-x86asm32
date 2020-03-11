@@ -6,3 +6,21 @@ string.h
 
 [FAIL] 3 tests failing with 3 tests passing.
 [SUCCESS] All tests ([NUM]) passing with no tests failing.
+
+
+Functions:
+===========
+test_assert(int32_t cond, char* title)
+test_assert_true(int32_t cond, char* title)
+test_assert_false(int32_t cond, char* title)
+
+test_assert_equal(int32_t val, int32_t exp, char* title) [default to 32-bit]
+//Perhaps don't implement the below 4 for now, maybe _int32 and macro_int and reg equal
+test_assert_equal_int(int32_t val, int32_t exp, char* title) [default to 32-bit]
+test_assert_equal_int8(int8_t val, int8_t exp, char* title)
+test_assert_equal_int16(int16_t val, int16_t exp, char* title)
+test_assert_equal_int32(int32_t val, int32_t exp, char* title)
+
+test_assert_equal_memory(int32_t* ptr, int32_t* exp, int32_t el, char* title)
+test_assert_equal_string(char* s, char* exp, char* title)
+test_assert_equal_string_len(char* s, char* exp, int32_t len, char* title)
