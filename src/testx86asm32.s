@@ -172,11 +172,12 @@ _strcat:
 	movl 12(%ebp), %ecx
 
 _strcat_while_set:
-	movl (%ecx), (%eax)
+	movl (%ecx), %edx
+	movl %edx, (%eax)
 	addl $4, %eax
 	addl $4, %ecx
 
-	cmpl $0, %(ecx)
+	cmpl $0, %edx
 	jne _strcat_while_set
 
 	popl %ebp
