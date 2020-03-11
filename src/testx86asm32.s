@@ -36,11 +36,12 @@ dnewline:
 
 .section .text
 
-.macro print buffer:req, buffsize:req
+.macro print buffer:req, buffersize:req
 	movl $4, %eax
 	movl $1, %ebx
 	movl \buffer, %ecx
 	movl \buffersize, %edx
+	int $0x80
 .endm
 
 .globl test_print
@@ -50,12 +51,7 @@ test_print:
 	movl %esp, %ebp
 
 	# Print buffer
-#	print $buffer, $BUFFER_SIZE
-	movl $4, %eax
-	movl $1, %ebx
-	movl 8(%ebp), %ecx
-	movl 12(%ebp), %edx
-	int $0x80
+	print 8(%ebp), 12(%ebp)
 
 	popl %ebp
 	ret
@@ -111,6 +107,5 @@ test_assert_if_end:
 	popl %ebp
 	ret
 
-.globl _strcat
 .type _strcat, @function
 _strcat:
