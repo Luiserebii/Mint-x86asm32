@@ -3,7 +3,7 @@
 #
 .section .bss
 	.equ BUFFER_SIZE, 10000
-	.icomm buffer, 10000
+	.lcomm buffer, 10000
 
 .section .data
 hello_world:

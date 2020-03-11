@@ -157,10 +157,40 @@ test_assert_if_end:
 	popl %ebp
 	ret
 #
-# strcat(char* dest, const char* src)
+# void strcat(char* dest, const char* src)
 #
 .type _strcat, @function
 _strcat:
+	pushl %ebp
+	movl %ebp, %esp
+
+
+	# Load dest and src into registers
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+	
+	# Roll dest up to the null terminator (\0)
+	# while(*dest) { ++dest; }
+
+	# while(*dest++ = *src++)
+	#    ;
+
+_strcat_while_set:
+	movl (%ecx), %edx
+	movl %edx, (%eax)
+	addl $4, %eax
+	addl $4, %ecx
+
+	cmpl $0, %edx
+	jne _strcat_while_set
+
+	popl %ebp
+	ret
+#
+# strcpy(char* dest, const char* src)
+#
+.type _strcpy, @function
+_strcpy:
 	pushl %ebp
 	movl %ebp, %esp
 
@@ -171,14 +201,14 @@ _strcat:
 	movl 8(%ebp), %eax
 	movl 12(%ebp), %ecx
 
-_strcat_while_set:
+_strcpy_while_set:
 	movl (%ecx), %edx
 	movl %edx, (%eax)
 	addl $4, %eax
 	addl $4, %ecx
 
 	cmpl $0, %edx
-	jne _strcat_while_set
+	jne _strcpy_while_set
 
 	popl %ebp
 	ret
