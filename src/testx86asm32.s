@@ -99,9 +99,6 @@ test_write_fail:
 	.equ TEST_WRITE_FAIL_VAL, 16
 	.equ TEST_WRITE_FAIL_EXP, 20
 	
-	movl TEST_WRITE_FAIL_TITLE(%ebp), %eax
-	movl TEST_WRITE_FAIL_VAL(%ebp), %ecx
-	movl TEST_WRITE_FAIL_EXP(%ebp), %edx
 	#write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
 	pushl $indent
 	pushl TEST_WRITE_FAIL_BUFF(%ebp)
@@ -112,20 +109,23 @@ test_write_fail:
 
 	movl $space, 4(%esp)
 	call _strcat
-	
+
+	movl TEST_WRITE_FAIL_TITLE(%ebp), %eax
 	movl %eax, 4(%esp)
 	call _strcat
 	
 	movl $fail_info_0x0, 4(%esp)
 	call _strcat
-	
-	movl %ecx, 4(%esp)
+
+	movl TEST_WRITE_FAIL_VAL(%ebp), %eax
+	movl %eax, 4(%esp)
 	call _strcat
 
 	movl $fail_info_0x1, 4(%esp)
 	call _strcat
-
-	movl %edx, 4(%esp)
+	
+	movl TEST_WRITE_FAIL_EXP(%ebp), %eax	
+	movl %eax, 4(%esp)
 	call _strcat
 	
 	movl $fail_info_0x2, 4(%esp)
