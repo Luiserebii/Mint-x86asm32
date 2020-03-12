@@ -96,6 +96,39 @@ test_print:
 	call _strcat
 .endm
 
+#
+# void test_write_success(char* buffer, const char* title)
+#
+.globl test_write_success
+.type test_write_success, @function
+test_write_success:
+	pushl %ebp
+	movl %esp, %ebp
+
+	.equ TEST_WRITE_SUCC_BUFF, 8
+	.equ TEST_WRITE_SUCC_TITLE, 12
+	
+	#write_fail TEST_WRITE_FAIL_BUFF(%ebp), %eax, %ecx, %edx
+	pushl $indent
+	pushl TEST_WRITE_SUCC_BUFF(%ebp)
+	call _strcat
+
+	movl $success, 4(%esp)
+	call _strcat
+
+	movl $space, 4(%esp)
+	call _strcat
+
+	movl $newline, 4(%esp)
+	call _strcat
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_write_fail(char* buffer, const char* title, const char* val, const char* exp)
+#
 .globl test_write_fail
 .type test_write_fail, @function
 test_write_fail:
