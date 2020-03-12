@@ -261,6 +261,62 @@ test_assert_equal_bin_end:
 	ret
 
 #
+# void test_assert_equal_hex(int32_t val, int32_t exp, char* title)
+#
+.globl test_assert_equal_hex
+.type test_assert_equal_hex, @function
+test_assert_equal_hex:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Branch depending on equality
+	movl 8(%ebp), %eax
+	cmpl %eax, 12(%ebp)
+	jne test_assert_equal_hex_ne
+
+	# It's equal, so write success
+	pushl 16(%ebp)
+	call test_print_success
+	jmp test_assert_equal_hex_end
+
+test_assert_equal_hex_ne:
+
+	# Convert both exp and val to char* and store into mini-buffers
+	# Prepend each buffer with a 0x
+	movl $buff_m1, %eax
+	movb $'0', (%eax)
+	movb $'x', 1(%eax)
+	addl $2, %eax
+	
+	pushl $16
+	pushl %eax
+	pushl 8(%ebp)
+	call _itoa
+	
+	movl $buff_m2, %eax
+	movb $'0', (%eax)
+	movb $'x', 1(%eax)
+	addl $2, %eax
+
+	movl %eax, -8(%ebp)
+	movl 12(%ebp), %eax
+	movl %eax, -12(%ebp)
+	call _itoa
+
+	# Finally, print
+	pushl $buff_m2
+	pushl $buff_m1
+	pushl 16(%ebp)
+	call test_print_fail
+
+test_assert_equal_hex_end:
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+
+#
 # void test_assert_equal_oct(int32_t val, int32_t exp, char* title)
 #
 .globl test_assert_equal_oct

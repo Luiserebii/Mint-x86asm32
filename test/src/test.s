@@ -105,32 +105,18 @@ _start:
 	pushl $100
 	pushl $100
 	call test_assert_equal_uint
+	call test_assert_equal_bin
+	call test_assert_equal_oct
+	call test_assert_equal_hex
 	
 	pushl $t_title
 	pushl $100
 	pushl $200
 	call test_assert_equal_uint	
-	
-	pushl $t_title
-	pushl $100
-	pushl $100
 	call test_assert_equal_bin
-	
-	pushl $t_title
-	pushl $100
-	pushl $200
-	call test_assert_equal_bin
-	
-	pushl $t_title
-	pushl $100
-	pushl $100
 	call test_assert_equal_oct
+	call test_assert_equal_hex
 	
-	pushl $t_title
-	pushl $100
-	pushl $200
-	call test_assert_equal_oct
-
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80
