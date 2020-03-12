@@ -54,7 +54,11 @@ test_print:
 	pushl 8(%ebp)
 	call _strlen
 
-	print 8(%ebp), %eax
+	# Push strlen because print macro will otherwise
+	# overwrite; I almost wonder if this is best as
+	# a function
+	pushl %eax
+	print 8(%ebp), -8(%ebp)
 
 	movl %ebp, %esp
 	popl %ebp
@@ -220,7 +224,7 @@ _strcat_while_set:
 	incl %eax
 	incl %ecx
 
-	cmpl $0, %dl
+	cmpb $0, %dl
 	jne _strcat_while_set
 
 	popl %ebp
