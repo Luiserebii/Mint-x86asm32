@@ -52,6 +52,11 @@ _start:
 	pushl $t_title
 	call test_print_success
 	
+	pushl $t_exp
+	pushl $t_val
+	pushl $t_title
+	call test_print_fail
+	
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80
