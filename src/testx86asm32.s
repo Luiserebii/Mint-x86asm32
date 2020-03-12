@@ -260,6 +260,59 @@ test_assert_equal_bin_end:
 	popl %ebp
 	ret
 
+#
+# void test_assert_equal_oct(int32_t val, int32_t exp, char* title)
+#
+.globl test_assert_equal_oct
+.type test_assert_equal_oct, @function
+test_assert_equal_oct:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Branch depending on equality
+	movl 8(%ebp), %eax
+	cmpl %eax, 12(%ebp)
+	jne test_assert_equal_oct_ne
+
+	# It's equal, so write success
+	pushl 16(%ebp)
+	call test_print_success
+	jmp test_assert_equal_oct_end
+
+test_assert_equal_oct_ne:
+
+	# Convert both exp and val to char* and store into mini-buffers
+	# Prepend each buffer with a 0
+	movl $buff_m1, %eax
+	movb $0, (%eax)
+	incl %eax
+	
+	pushl $8
+	pushl %eax
+	pushl 8(%ebp)
+	call _itoa
+	
+	movl $buff_m2, %eax
+	movb $0, (%eax)
+	incl %eax
+
+	movl %eax, -8(%ebp)
+	movl 12(%ebp), %eax
+	movl %eax, -12(%ebp)
+	call _itoa
+
+	# Finally, print
+	pushl $buff_m2
+	pushl $buff_m1
+	pushl 16(%ebp)
+	call test_print_fail
+
+test_assert_equal_oct_end:
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 # ================================================
 #                 WRITE FUNCTIONS
 # ================================================

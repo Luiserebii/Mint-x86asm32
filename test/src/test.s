@@ -120,6 +120,16 @@ _start:
 	pushl $100
 	pushl $200
 	call test_assert_equal_bin
+	
+	pushl $t_title
+	pushl $100
+	pushl $100
+	call test_assert_equal_oct
+	
+	pushl $t_title
+	pushl $100
+	pushl $200
+	call test_assert_equal_oct
 
 	movl $1, %eax
 	movl $0, %ebx
