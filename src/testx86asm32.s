@@ -152,7 +152,33 @@ test_print_fail:
 	ret
 
 #
-# test_print_fail_memory(const char* title, const char* val, const char* exp, const char* n)
+# void test_print_fail_bool_true(const char* title, const char* val)
+#
+.globl test_print_fail_bool_true
+.type test_print_fail_bool_true, @function
+test_print_fail_bool_true:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Clear the buffer
+	movb $0, buffer
+
+	.equ TEST_PRINT_FAIL_TITLE, 8
+	.equ TEST_PRINT_FAIL_VAL, 12
+
+	pushl TEST_PRINT_FAIL_VAL(%ebp)
+	pushl TEST_PRINT_FAIL_TITLE(%ebp)
+	pushl $buffer
+
+	call test_write_fail_bool_true
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_print_fail_memory(const char* title, const char* val, const char* exp, const char* n)
 #
 # This function uses the buffer to print, overwriting
 # its contents.

@@ -55,6 +55,10 @@ _start:
 	# Test print functions
 	pushl $t_title
 	call test_print_success
+
+	pushl $t_val
+	pushl $t_title
+	call test_print_fail_bool_true
 	
 	pushl $t_exp
 	pushl $t_val
