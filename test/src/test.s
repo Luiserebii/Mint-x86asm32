@@ -17,7 +17,7 @@ t_exp:
 t_n:
 	.ascii "2\0"
 divider:
-	.ascii "==============================\0"
+	.ascii "==============================\n\0"
 
 .section .text
 .globl _start

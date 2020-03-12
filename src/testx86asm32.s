@@ -113,6 +113,13 @@ test_print_success:
 	popl %ebp
 	ret
 
+.macro print buffer:req, bytes:req
+	movl $4, %eax
+	movl $1, %ebx
+	movl \buffer, %ecx
+	movl \bytes, %edx
+	int $0x80
+.endm
 
 #
 # void test_print(char* buffer)
@@ -138,14 +145,6 @@ test_print:
 	movl %ebp, %esp
 	popl %ebp
 	ret
-
-.macro print buffer:req, bytes:req
-	movl $4, %eax
-	movl $1, %ebx
-	movl \buffer, %ecx
-	movl \bytes, %edx
-	int $0x80
-.endm
 
 #
 # void test_write_success(char* buffer, const char* title)
