@@ -821,6 +821,10 @@ itoa_while_not_zero_end:
 	movl ITOA_STR(%ebp), %eax
 	movl $0, (%eax)
 
+	# And, reverse:
+	pushl 12(%ebp)
+	call _strrev
+
 	movl %ebp, %esp
 	popl %ebp
 	ret
