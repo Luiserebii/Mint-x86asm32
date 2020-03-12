@@ -179,7 +179,7 @@ test_assert_equal_uint
 .type test_assert_equal_uint, @function
 test_assert_equal_uint:
 	pushl %ebp
-	movl %esp, %esp
+	movl %esp, %ebp
 	
 	# Branch depending on equality
 	movl 8(%ebp), %eax
@@ -214,6 +214,7 @@ test_assert_equal_uint_end:
 
 	movl %ebp, %esp
 	popl %ebp
+	ret
 
 # ================================================
 #                 WRITE FUNCTIONS
