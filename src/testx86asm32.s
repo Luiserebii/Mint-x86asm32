@@ -679,26 +679,34 @@ _itoa:
 	movl %esp, %ebp
 
 	# Make room for a few local variables on the stack:
-	.equ ITOA_NO_LVARS, 4
+	.equ ITOA_NO_LVARS, 3
 	.equ ITOA_LV_BYTES, ITOA_NO_LVARS * 4
 	subl $ITOA_LV_BYTES, %esp
 
-	# Use var to hold the mult. counter
-	.equ ITOA_MULT_CTR, -4
-	movl $1, ITOA_MULT_CTR(%ebp)
-
 	# Use var to hold the 32-bit int to manipulate
-	.equ ITOA_N, -8
+	.equ ITOA_N, -4
 	movl 8(%ebp), %eax
 	movl %eax, ITOA_N(%ebp)
 
 	# Use var to hold the digit to keep track of
-	.equ ITOA_DIGIT, -12
+	.equ ITOA_DIGIT, -8
 
 	# Use var to hold the address of the string to iterate through
-	.equ ITOA_STR, -16
-	movl 12(%ebp), %eax
-	movl %eax, ITOA_STR(%ebp)
+	.equ ITOA_STR, -12
+	movl 12(%ebp), %ecx
+	movl %ecx, ITOA_STR(%ebp)
+
+	# Check to see that number is 0, to apply special case
+	cmpl $0, %eax
+	jne itoa_while_not_zero
+
+	movl $'0', (%ecx)
+	incl %ecx
+	movl $0, (%ecx) 
+
+	movl %ebp, %esp
+	popl %ebp
+	ret 
 
 itoa_while_not_zero:
 	# while(n != 0)
@@ -717,15 +725,8 @@ itoa_while_not_zero:
 	movl %edx, ITOA_DIGIT(%ebp)
 	movl %eax, ITOA_N(%ebp)
 	
-	# "Increment" multctr by multiplying by base
-	imull %ecx
-	movl %eax, ITOA_MULT_CTR(%ebp)
-
 	# Set current string pos to digit equivalent, and increment
 	movl ITOA_STR(%ebp), %eax
-	#.equ ITOA_0_CHAR, '0'
-	#movl $ITOA_0_CHAR, %ecx
-	#addl ITOA_DIGIT(%ebp), %ecx
 	movl ITOA_DIGIT(%ebp), %ecx
 	movl itoa_lookup_table(, %ecx, 1), %ecx
 	
