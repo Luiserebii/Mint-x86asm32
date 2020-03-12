@@ -310,6 +310,53 @@ test_print_fail_memory:
 	popl %ebp
 	ret
 
+#
+# void test_print_success_line(const char* pass)
+#
+.globl test_print_success_line
+.type test_print_success_line, @function
+test_print_success_line:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Clear the buffer
+	movb $0, buffer
+
+	.equ TEST_PRINT_SUCC_LINE_PASS, 8
+	pushl TEST_PRINT_SUCC_LINE_PASS(%ebp)
+	pushl $buffer
+
+	call test_write_success_line
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_print_fail_line(const char* fail, const char* pass)
+#
+.globl test_print_fail_line
+.type test_print_fail_line, @function
+test_print_fail_line:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Clear the buffer
+	movb $0, buffer
+
+	.equ TEST_PRINT_FAIL_LINE_FAIL, 8
+	.equ TEST_PRINT_FAIL_LINE_PASS, 12
+	pushl TEST_PRINT_FAIL_LINE_PASS(%ebp)
+	pushl TEST_PRINT_FAIL_LINE_FAIL(%ebp)
+	pushl $buffer
+
+	call test_write_fail_line
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
 
 .macro print buffer:req, bytes:req
 	movl $4, %eax
