@@ -59,6 +59,7 @@ _start:
 	pushl $t_val
 	pushl $t_title
 	call test_print_fail_bool_true
+	call test_print_fail_bool_false
 	
 	pushl $t_exp
 	pushl $t_val

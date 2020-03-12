@@ -596,3 +596,81 @@ _strlen_while_s_end:
 	popl %ebp
 	ret
 
+#=========
+# itoa
+#=========
+#
+#  void itoa(int32_t val, char* s)
+#
+#  Takes two arguments, a 32-bit int and an address pointing to
+#  an array of chars.
+#
+#  It is assumed that the char array has enough space to fit the
+#  int; otherwise, the behavior is undefined.
+.type _itoa, @function
+_itoa:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Make room for a few local variables on the stack:
+	.equ ITOA_NO_LVARS, 4
+	.equ ITOA_LV_BYTES, ITOA_NO_LVARS * 4
+	subl $ITOA_LV_BYTES, %esp
+
+	# Use var to hold the mult. counter
+	.equ ITOA_MULT_CTR, -4
+	movl $1, ITOA_MULT_CTR(%ebp)
+
+	# Use var to hold the 32-bit int to manipulate
+	.equ ITOA_N, -8
+	movl 8(%ebp), %eax
+	movl %eax, ITOA_N(%ebp)
+
+	# Use var to hold the digit to keep track of
+	.equ ITOA_DIGIT, -12
+
+	# Use var to hold the address of the string to iterate through
+	.equ ITOA_STR, -16
+	movl 12(%ebp), %eax
+	movl %eax, ITOA_STR(%ebp)
+
+itoa_while_not_zero:
+	# while(n != 0)
+	cmpl $0, ITOA_N(%ebp)
+	je itoa_while_not_zero_end
+
+	# Define dividend ATOI_N in %edx:%eax
+	movl $0, %edx
+	movl ITOA_N(%ebp), %eax
+
+	# Divide ATOI_N by 10 (10 being the base)
+	movl $10, %ecx
+	idivl %ecx
+	
+	# Set remainder (%) to digit, and quotient back to ATOI_N
+	movl %edx, ITOA_DIGIT(%ebp)
+	movl %eax, ITOA_N(%ebp)
+	
+	# "Increment" multctr by multiplying by base
+	imull %ecx
+	movl %eax, ITOA_MULT_CTR(%ebp)
+
+	# Set current string pos to digit equivalent, and increment
+	movl ITOA_STR(%ebp), %eax
+	.equ ITOA_0_CHAR, '0'
+	movl $ITOA_0_CHAR, %ecx
+	addl ITOA_DIGIT(%ebp), %ecx
+	
+	movl %ecx, (%eax)
+	incl ITOA_STR(%ebp)
+
+	jmp itoa_while_not_zero
+
+itoa_while_not_zero_end:
+	# Finally, cap string off with '\0' null terminator
+	movl ITOA_STR(%ebp), %eax
+	movl $0, (%eax)
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
