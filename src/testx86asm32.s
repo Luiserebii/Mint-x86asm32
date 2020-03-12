@@ -203,10 +203,10 @@ _strcat:
 	# Roll dest up to the null terminator (\0)
 	# while(*dest) { ++dest; }
 _strcat_while_char_src:
-	cmpl $0, (%eax)
+	cmpb $0, (%eax)
 	je _strcat_while_char_src_end
 
-	addl $4, %eax
+	incl %eax
 	jmp _strcat_while_char_src
 
 _strcat_while_char_src_end:
@@ -215,12 +215,12 @@ _strcat_while_char_src_end:
 	#    ;
 
 _strcat_while_set:
-	movl (%ecx), %edx
-	movl %edx, (%eax)
-	addl $4, %eax
-	addl $4, %ecx
+	movb (%ecx), %dl
+	movb %dl, (%eax)
+	incl %eax
+	incl %ecx
 
-	cmpl $0, %edx
+	cmpl $0, %dl
 	jne _strcat_while_set
 
 	popl %ebp
@@ -241,12 +241,12 @@ _strcpy:
 	movl 12(%ebp), %ecx
 
 _strcpy_while_set:
-	movl (%ecx), %edx
-	movl %edx, (%eax)
-	addl $4, %eax
-	addl $4, %ecx
+	movb (%ecx), %dl
+	movb %dl, (%eax)
+	incl %eax
+	incl %edx
 
-	cmpl $0, %edx
+	cmpb $0, %dl
 	jne _strcpy_while_set
 
 	popl %ebp
