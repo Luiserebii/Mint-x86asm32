@@ -284,7 +284,7 @@ test_assert_equal_oct_ne:
 	# Convert both exp and val to char* and store into mini-buffers
 	# Prepend each buffer with a 0
 	movl $buff_m1, %eax
-	movb $0, (%eax)
+	movb $'0', (%eax)
 	incl %eax
 	
 	pushl $8
@@ -293,7 +293,7 @@ test_assert_equal_oct_ne:
 	call _itoa
 	
 	movl $buff_m2, %eax
-	movb $0, (%eax)
+	movb $'0', (%eax)
 	incl %eax
 
 	movl %eax, -8(%ebp)
