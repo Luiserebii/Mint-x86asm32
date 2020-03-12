@@ -672,7 +672,7 @@ _strrev:
 	subl $12, %esp	
 
 	movl 8(%ebp), %eax
-	movl %eax, -12(%esp)
+	movl %eax, -12(%ebp)
 	call _strlen
 	movl %eax, STRREV_LEN(%ebp)
 	
