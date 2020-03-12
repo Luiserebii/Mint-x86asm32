@@ -20,7 +20,7 @@ t_exp:
 
 _start:
 
-	pushl $BUFFER_SIZE
+	#pushl $BUFFER_SIZE
 	pushl $hello_world
 	call test_print
 

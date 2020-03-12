@@ -263,15 +263,18 @@ _strlen:
 	# Reserve 0 as place for length
 	movl $0, %eax
 
-	# Use %ebx as string
-	movl 8(%ebp), %ebx
+	# Use %ecx as string
+	movl 8(%ebp), %ecx
 
 	# while(*s++) { ++len }
+	# The above isn't actually quite accurate, it's more like
+	# while(*s) { ++s, ++len; }, we can't stuff something between
+	# cmpb and je without it breaking I think
 _strlen_while_s:
-	cmpl $0, (%ebx)
-	addl $4, %ebx
+	cmpb $0, (%ecx)
 	je _strlen_while_s_end
 
+	incl %ecx
 	incl %eax
 	jmp _strlen_while_s
 
