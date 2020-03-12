@@ -723,9 +723,11 @@ itoa_while_not_zero:
 
 	# Set current string pos to digit equivalent, and increment
 	movl ITOA_STR(%ebp), %eax
-	.equ ITOA_0_CHAR, '0'
-	movl $ITOA_0_CHAR, %ecx
-	addl ITOA_DIGIT(%ebp), %ecx
+	#.equ ITOA_0_CHAR, '0'
+	#movl $ITOA_0_CHAR, %ecx
+	#addl ITOA_DIGIT(%ebp), %ecx
+	movl ITOA_DIGIT(%ebp), %ecx
+	movl itoa_lookup_table(, %ecx, 1), %ecx
 	
 	movl %ecx, (%eax)
 	incl ITOA_STR(%ebp)
