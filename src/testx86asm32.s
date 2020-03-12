@@ -1172,3 +1172,36 @@ itoa_while_not_zero_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+#
+# int memcmp(void* a, void* b, int32_t n)
+#
+# Iterates through the ranges [a, a + n) and [b, b + n),
+# returning -1 if a < b, 1 if a > b, or 0 if a == b.
+#
+.globl _memcmp
+.type _memcmp, @function
+_memcmp: 
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Load a, b, and n into %eax, %ecx, and %edx
+	# respectively
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+	movl 16(%ebp), %edx
+
+memcmp_for_len:
+	cmpl $0, %edx
+	je memcmp_for_end
+
+	
+memcmp_for_inc:
+	decl %edx
+	incl %eax
+	incl %ecx
+
+memcmp_for_end:
+
+	popl %ebp
+	ret
