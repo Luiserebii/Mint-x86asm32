@@ -197,12 +197,12 @@ test_assert_equal_uint_ne:
 	pushl $10
 	pushl $buff_m1
 	pushl 8(%ebp)
-	call _atoi
+	call _itoa
 
 	movl $buff_m2, -8(%ebp)
 	movl 12(%ebp), %eax
 	movl %eax, -12(%ebp)
-	call _atoi
+	call _itoa
 
 	# Finally, print
 	pushl $buff_m2

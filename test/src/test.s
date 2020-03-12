@@ -101,6 +101,16 @@ _start:
 	pushl $1024
 	call test_assert_false
 
+	pushl $t_title
+	pushl $100
+	pushl $100
+	call test_assert_equal_uint
+	
+	pushl $t_title
+	pushl $100
+	pushl $200
+	call test_assert_equal_uint	
+
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80
