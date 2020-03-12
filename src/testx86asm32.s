@@ -25,6 +25,12 @@ fail_info_0x1:
 fail_info_0x2:
 	.ascii "\"\n\0"
 
+fail_mem_info_0x1:
+	.ascii "\" on \0"
+
+fail_mem_info_0x2:
+	.ascii "th byte, found \"\0"
+
 space:
 	.ascii " \0"
 
@@ -118,6 +124,10 @@ test_write_success:
 
 	movl $space, 4(%esp)
 	call _strcat
+	
+	movl TEST_WRITE_SUCC_TITLE(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
 
 	movl $newline, 4(%esp)
 	call _strcat
@@ -158,14 +168,64 @@ test_write_fail:
 	movl $fail_info_0x0, 4(%esp)
 	call _strcat
 
-	movl TEST_WRITE_FAIL_VAL(%ebp), %eax
+	movl TEST_WRITE_FAIL_EXP(%ebp), %eax
 	movl %eax, 4(%esp)
 	call _strcat
 
 	movl $fail_info_0x1, 4(%esp)
 	call _strcat
 	
-	movl TEST_WRITE_FAIL_EXP(%ebp), %eax	
+	movl TEST_WRITE_FAIL_VAL(%ebp), %eax	
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_0x2, 4(%esp)
+	call _strcat
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_write_fail_memory(char* buffer, const char* title, const char* val, const char* exp, char* n)
+#
+.globl test_write_fail_memory
+.type test_write_fail_memory, @function
+test_write_fail_memory:
+	pushl %ebp
+	movl %esp, %ebp
+
+	.equ TEST_WRITE_FAIL_MEM_BUFF, 8
+	.equ TEST_WRITE_FAIL_MEM_TITLE, 12
+	.equ TEST_WRITE_FAIL_MEM_VAL, 16
+	.equ TEST_WRITE_FAIL_MEM_EXP, 20
+	.equ TEST_WRITE_FAIL_MEM_N, 24
+	
+	pushl $indent
+	pushl TEST_WRITE_FAIL_MEM_BUFF(%ebp)
+	call _strcat
+
+	movl $fail, 4(%esp)
+	call _strcat
+
+	movl $space, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_MEM_TITLE(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_0x0, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_MEM_EXP(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+
+	movl $fail_mem_info_0x1, 4(%esp)
+	call _strcat
+	
+	movl TEST_WRITE_FAIL_MEM_VAL(%ebp), %eax	
 	movl %eax, 4(%esp)
 	call _strcat
 	

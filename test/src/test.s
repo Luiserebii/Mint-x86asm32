@@ -32,6 +32,8 @@ _start:
 	pushl $buffer
 	call test_write_fail
 
+	call test_write_success
+
 	pushl $BUFFER_SIZE
 	pushl $buffer
 	call test_print
