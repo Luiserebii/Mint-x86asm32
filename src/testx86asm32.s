@@ -163,14 +163,40 @@ test_print_fail_bool_true:
 	# Clear the buffer
 	movb $0, buffer
 
-	.equ TEST_PRINT_FAIL_TITLE, 8
-	.equ TEST_PRINT_FAIL_VAL, 12
+	.equ TEST_PRINT_FAIL_BOOL_TRUE_TITLE, 8
+	.equ TEST_PRINT_FAIL_BOOL_TRUE_VAL, 12
 
-	pushl TEST_PRINT_FAIL_VAL(%ebp)
-	pushl TEST_PRINT_FAIL_TITLE(%ebp)
+	pushl TEST_PRINT_FAIL_BOOL_TRUE_VAL(%ebp)
+	pushl TEST_PRINT_FAIL_BOOL_TRUE_TITLE(%ebp)
 	pushl $buffer
 
 	call test_write_fail_bool_true
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_print_fail_bool_false(const char* title, const char* val)
+#
+.globl test_print_fail_bool_false
+.type test_print_fail_bool_false, @function
+test_print_fail_bool_false:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Clear the buffer
+	movb $0, buffer
+
+	.equ TEST_PRINT_FAIL_BOOL_FALSE_TITLE, 8
+	.equ TEST_PRINT_FAIL_BOOL_FALSE_VAL, 12
+
+	pushl TEST_PRINT_FAIL_BOOL_FALSE_VAL(%ebp)
+	pushl TEST_PRINT_FAIL_BOOL_FALSE_TITLE(%ebp)
+	pushl $buffer
+
+	call test_write_fail_bool_false
 	call test_print
 
 	movl %ebp, %esp
@@ -358,7 +384,7 @@ test_write_fail_bool_true:
 	movl $fail_info_bool_true_0x0, 4(%esp)
 	call _strcat
 
-	movl TEST_WRITE_FAIL_VAL(%ebp), %eax	
+	movl TEST_WRITE_FAIL_BOOL_TRUE_VAL(%ebp), %eax	
 	movl %eax, 4(%esp)
 	call _strcat
 	
@@ -370,7 +396,48 @@ test_write_fail_bool_true:
 	ret
 
 #
-# void test_write_fail_memory(char* buffer, const char* title, const char* val, const char* exp, char* n)
+# void test_write_fail_bool_false(char* buffer, const char* title, const char* val)
+#
+.globl test_write_fail_bool_false
+.type test_write_fail_bool_false, @function
+test_write_fail_bool_false:
+	pushl %ebp
+	movl %esp, %ebp
+
+	.equ TEST_WRITE_FAIL_BOOL_FALSE_BUFF, 8
+	.equ TEST_WRITE_FAIL_BOOL_FALSE_TITLE, 12
+	.equ TEST_WRITE_FAIL_BOOL_FALSE_VAL, 16
+	
+	pushl $indent
+	pushl TEST_WRITE_FAIL_BOOL_FALSE_BUFF(%ebp)
+	call _strcat
+
+	movl $fail, 4(%esp)
+	call _strcat
+
+	movl $space, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_BOOL_FALSE_TITLE(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_bool_false_0x0, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_BOOL_FALSE_VAL(%ebp), %eax	
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_bool_0x0, 4(%esp)
+	call _strcat
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_write_fail_memory(char* buffer, const char* title, const char* val, const char* exp, const char* n)
 #
 .globl test_write_fail_memory
 .type test_write_fail_memory, @function
