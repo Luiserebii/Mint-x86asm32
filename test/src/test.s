@@ -14,13 +14,17 @@ t_val:
 	.ascii "10\0"
 t_exp:
 	.ascii "20\0"
+t_n:
+	.ascii "2\0"
+divider:
+	.ascii "==============================\0"
 
 .section .text
 .globl _start
 
 _start:
 
-	#pushl $BUFFER_SIZE
+	# Test write functions
 	pushl $hello_world
 	call test_print
 
@@ -31,12 +35,22 @@ _start:
 	pushl $t_title
 	pushl $buffer
 	call test_write_fail
-
 	call test_write_success
-
-	pushl $BUFFER_SIZE
+	
+	pushl $t_n
+	pushl $t_exp
+	pushl $t_val
+	pushl $t_title
 	pushl $buffer
+	call test_write_fail_memory
 	call test_print
+	
+	pushl $divider
+	call test_print	
+
+	# Test print functions
+	pushl $t_title
+	call test_print_success
 	
 	movl $1, %eax
 	movl $0, %ebx

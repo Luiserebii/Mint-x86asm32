@@ -42,14 +42,83 @@ dnewline:
 
 .section .text
 
-.macro print buffer:req, bytes:req
-	movl $4, %eax
-	movl $1, %ebx
-	movl \buffer, %ecx
-	movl \bytes, %edx
-	int $0x80
-.endm
+#
+# test_assert(int32_t cond, char* title)
+#
+# Evaluates the condition and prints success if true,
+# failure otherwise. The title argument is used to
+# prepend the test case.
+#
+# Note that this uses the C definition of true;
+# non-zero is true, zero is false.
+#
+.globl test_assert
+.type test_assert, @function
+test_assert:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Branch depending on cond
+	cmpl $0, 8(%ebp)
+	je test_assert_if_false
 
+	# Logic for true
+	pushl $buffer
+	
+# void test_write_success(char* buffer, const char* title)
+	call _strcat
+	jmp test_assert_if_end
+
+test_assert_if_false:
+	# Logic for false
+	
+	# itoa(cond, buffer, 10)
+	# concat is false at the end
+
+test_assert_if_end:
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+# ================================================
+#                 WRITE FUNCTIONS
+# ================================================
+#
+# Functions to write to string buffers, particularly
+# on success/failure.
+#
+
+#
+# test_print_success(char* title)
+#
+# This function uses the buffer to print, overwriting
+# its contents.
+# 
+.globl test_print_success
+.type test_print_success, @function
+test_print_success:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Clear the buffer
+	movb $0, buffer
+
+	pushl 8(%ebp)
+	pushl $buffer
+	call test_write_success
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+
+#
+# void test_print(char* buffer)
+#
+# Prints the buffer to STDOUT.
+#
 .globl test_print
 .type test_print, @function
 test_print:
@@ -70,36 +139,12 @@ test_print:
 	popl %ebp
 	ret
 
-# With this macro, please place title, val, and exp into regs
-# if passing memory references.
-.macro write_fail buffer:req, title:req, val:req, exp:req
-	pushl $indent
-	pushl \buffer
-	call _strcat
-
-	movl $fail, 4(%esp)
-	call _strcat
-
-	movl $space, 4(%esp)
-	call _strcat
-	
-	movl \title, 4(%esp)
-	call _strcat
-	
-	movl $fail_info_0x0, 4(%esp)
-	call _strcat
-	
-	movl \exp, 4(%esp)
-	call _strcat
-
-	movl $fail_info_0x1, 4(%esp)
-	call _strcat
-
-	movl \val, 4(%esp)
-	call _strcat
-	
-	movl $fail_info_0x2, 4(%esp)
-	call _strcat
+.macro print buffer:req, bytes:req
+	movl $4, %eax
+	movl $1, %ebx
+	movl \buffer, %ecx
+	movl \bytes, %edx
+	int $0x80
 .endm
 
 #
@@ -225,6 +270,13 @@ test_write_fail_memory:
 	movl $fail_mem_info_0x1, 4(%esp)
 	call _strcat
 	
+	movl TEST_WRITE_FAIL_MEM_N(%ebp), %eax	
+	movl %eax, 4(%esp)
+	call _strcat
+
+	movl $fail_mem_info_0x2, 4(%esp)
+	call _strcat
+	
 	movl TEST_WRITE_FAIL_MEM_VAL(%ebp), %eax	
 	movl %eax, 4(%esp)
 	call _strcat
@@ -235,56 +287,15 @@ test_write_fail_memory:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+# ================================================
+#                 UTILITY FUNCTIONS
+# ================================================
 #
-# test_assert(int32_t cond, char* title)
-#
-# Evaluates the condition and prints success if true,
-# failure otherwise. The title argument is used to
-# prepend the test case.
-#
-# Note that this uses the C definition of true;
-# non-zero is true, zero is false.
-#
-.globl test_assert
-.type test_assert, @function
-test_assert:
-	pushl %ebp
-	movl %esp, %ebp
-	
-	# Concat indent to buffer, and title
-	pushl indent
-	pushl buffer
-	call _strcat
+# Private utility functions to avoid dependencies
+# and linker naming collision.
+# 
 
-	movl 8(%ebp), %eax
-	movl %eax, -4(%ebp)
-	call _strcat
-
-	# Branch depending on cond
-	cmpl $0, 12(%ebp)
-	je test_assert_if_false
-
-	# Logic for true
-	movl $success, -4(%esp)
-	call _strcat
-	jmp test_assert_if_end
-
-test_assert_if_false:
-	# Logic for false
-	movl $fail, -4(%esp)
-	call _strcat
-
-	movl $fail_info_0x0, -4(%esp)
-	call _strcat
-	
-	# itoa(cond, buffer, 10)
-	# concat is false at the end
-
-test_assert_if_end:
-
-	movl %ebp, %esp
-	popl %ebp
-	ret
 #
 # void strcat(char* dest, const char* src)
 #
