@@ -10,6 +10,9 @@
 	.comm buff_m1, BUFFER_SIZE
 
 .section .data
+itoa_lookup_table:
+	.byte '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+
 indent:
 	.ascii "  \0"
 
@@ -81,11 +84,12 @@ test_assert:
 
 test_assert_if_false:
 	# Logic for false
+	pushl $10
 	pushl $buff_m1
 	pushl 8(%ebp)
 	call _itoa
 
-	pushl %eax
+	pushl $buff_m1
 	pushl 12(%ebp)
 	call test_print_fail_bool_true
 
@@ -131,11 +135,12 @@ test_assert_false:
 
 test_assert_false_if_true:
 	# Logic for true
+	pushl $10
 	pushl $buff_m1
 	pushl 8(%ebp)
 	call _itoa
 
-	pushl %eax
+	pushl $buff_m1
 	pushl 12(%ebp)
 	call test_print_fail_bool_false
 
@@ -657,13 +662,17 @@ _strlen_while_s_end:
 # itoa
 #=========
 #
-#  void itoa(int32_t val, char* s)
+#  void itoa(int32_t val, char* s, int32_t base)
 #
 #  Takes two arguments, a 32-bit int and an address pointing to
 #  an array of chars.
 #
 #  It is assumed that the char array has enough space to fit the
 #  int; otherwise, the behavior is undefined.
+#
+#  It is also assumed that the base is at least 2 and not greater
+#  than 16; otherwise, the behavior is undefined.
+#
 .type _itoa, @function
 _itoa:
 	pushl %ebp
@@ -700,8 +709,8 @@ itoa_while_not_zero:
 	movl $0, %edx
 	movl ITOA_N(%ebp), %eax
 
-	# Divide ATOI_N by 10 (10 being the base)
-	movl $10, %ecx
+	# Divide ATOI_N by the base
+	movl 16(%ebp), %ecx
 	idivl %ecx
 	
 	# Set remainder (%) to digit, and quotient back to ATOI_N
