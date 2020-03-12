@@ -84,6 +84,14 @@ _start:
 	pushl $0
 	call test_assert
 	
+	pushl $t_title
+	pushl $0
+	call test_assert_false
+
+	pushl $t_title
+	pushl $1
+	call test_assert_false
+	
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80

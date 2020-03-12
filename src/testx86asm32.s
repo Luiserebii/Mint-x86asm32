@@ -95,6 +95,56 @@ test_assert_if_end:
 	popl %ebp
 	ret
 
+#
+# test_assert_true(int32_t cond, char* title)
+#
+# Alias for test_assert.
+#
+.macro test_assert_true 
+test_assert
+.endm
+
+#
+# test_assert_false(int32_t cond, char* title)
+#
+# Evaluates the condition and prints success if false,
+# failure otherwise. The title argument is used to
+# prepend the test case.
+#
+# Note that this uses the C definition of true;
+# non-zero is true, zero is false.
+#
+.globl test_assert_false
+.type test_assert_false, @function
+test_assert_false:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Branch depending on cond
+	cmpl $0, 8(%ebp)
+	jne test_assert_false_if_true
+
+	# Logic for false
+	pushl 12(%ebp)
+	call test_print_success
+	jmp test_assert_false_if_end
+
+test_assert_false_if_true:
+	# Logic for true
+	pushl $buff_m1
+	pushl 8(%ebp)
+	call _itoa
+
+	pushl %eax
+	pushl 12(%ebp)
+	call test_print_fail_bool_false
+
+test_assert_false_if_end:
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 # ================================================
 #                 WRITE FUNCTIONS
 # ================================================
