@@ -16,6 +16,13 @@ t_exp:
 	.ascii "20\0"
 t_n:
 	.ascii "2\0"
+t_str0:
+	.ascii "aac\0"
+t_str1:
+	.ascii "aaa\0"
+t_str2:
+	.ascii "aaz\0"
+
 divider:
 	.ascii "==============================\n\0"
 
@@ -117,6 +124,21 @@ _start:
 	call test_assert_equal_oct
 	call test_assert_equal_hex
 	
+	pushl $3
+	pushl $t_str0
+	pushl $t_str0
+	call _memcmp
+	
+	pushl $3
+	pushl $t_str0
+	pushl $t_str1
+	call _memcmp
+	
+	pushl $3
+	pushl $t_str0
+	pushl $t_str2
+	call _memcmp
+
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80

@@ -1200,8 +1200,8 @@ memcmp_for_len:
 	je memcmp_for_end
 
 	# If *a < *b, -1
-	movl (%eax), %edx
-	cmpl %edx, (%ecx)
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
 	jle memcmp_if_greater_cmp
 
 	movl $-1, %eax
@@ -1211,8 +1211,8 @@ memcmp_for_len:
 
 memcmp_if_greater_cmp:
 	# If *a > *b
-	movl (%eax), %edx
-	cmpl %edx, (%ecx)
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
 	jge memcmp_for_inc
 
 	movl $1, %eax
