@@ -93,7 +93,7 @@ _start:
 	call test_assert_false
 	
 	pushl $t_title
-	pushl $4
+	pushl $1024
 	call test_assert_false
 	
 	movl $1, %eax

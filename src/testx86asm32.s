@@ -691,13 +691,14 @@ strrev_for:
 	cmpl STRREV_LIM(%ebp), %eax
 	jge strrev_for_end
 	
-	# Swap s + i and s - i - 1
+	# Swap s + i and s + len - i - 1
 	# Using %ecx for s + i
-	# Using %edx for s - i - 1
+	# Using %edx for s + len - i - 1
 	movl 8(%ebp), %ecx
 	movl %ecx, %edx
 
 	addl %eax, %ecx
+	addl STRREV_LEN(%ebp), %edx
 	subl %eax, %edx
 	subl $1, %edx
 
