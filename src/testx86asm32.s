@@ -63,17 +63,15 @@ test_assert:
 	je test_assert_if_false
 
 	# Logic for true
-	pushl $buffer
-	
-# void test_write_success(char* buffer, const char* title)
-	call _strcat
+	pushl 12(%ebp)
+	call test_print_success
 	jmp test_assert_if_end
 
 test_assert_if_false:
 	# Logic for false
 	
 	# itoa(cond, buffer, 10)
-	# concat is false at the end
+	# call test_print_fail_bool_true
 
 test_assert_if_end:
 
@@ -289,6 +287,47 @@ test_write_fail:
 	call _strcat
 	
 	movl $fail_info_0x2, 4(%esp)
+	call _strcat
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_write_fail_bool_true(char* buffer, const char* title, const char* val)
+#
+.globl test_write_fail_bool_true
+.type test_write_fail_bool_true, @function
+test_write_fail_bool_true:
+	pushl %ebp
+	movl %esp, %ebp
+
+	.equ TEST_WRITE_FAIL_BOOL_TRUE_BUFF, 8
+	.equ TEST_WRITE_FAIL_BOOL_TRUE_TITLE, 12
+	.equ TEST_WRITE_FAIL_BOOL_TRUE_VAL, 16
+	
+	pushl $indent
+	pushl TEST_WRITE_FAIL_BOOL_TRUE_BUFF(%ebp)
+	call _strcat
+
+	movl $fail, 4(%esp)
+	call _strcat
+
+	movl $space, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_BOOL_TRUE_TITLE(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_bool_true_0x0, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_VAL(%ebp), %eax	
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_info_bool_0x0, 4(%esp)
 	call _strcat
 
 	movl %ebp, %esp
