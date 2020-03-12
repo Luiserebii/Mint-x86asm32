@@ -72,6 +72,11 @@ _start:
 	pushl $t_title
 	call test_print_fail_memory
 
+	pushl $t_val
+	pushl $t_exp
+	call test_print_fail_line
+	call test_print_success_line
+
 	pushl $divider
 	call test_print	
 
@@ -95,7 +100,7 @@ _start:
 	pushl $t_title
 	pushl $1024
 	call test_assert_false
-	
+
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80
