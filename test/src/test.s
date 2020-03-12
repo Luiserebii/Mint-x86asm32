@@ -28,14 +28,18 @@ _start:
 	pushl $hello_world
 	call test_print
 
+	# Set buffer to empty string
 	movl $0, buffer
+
+	pushl $t_title
+	pushl $buffer
+	call test_write_success
 
 	pushl $t_exp
 	pushl $t_val
 	pushl $t_title
 	pushl $buffer
 	call test_write_fail
-	call test_write_success
 	
 	pushl $t_n
 	pushl $t_exp
@@ -56,6 +60,12 @@ _start:
 	pushl $t_val
 	pushl $t_title
 	call test_print_fail
+	
+	pushl $t_n
+	pushl $t_exp
+	pushl $t_val
+	pushl $t_title
+	call test_print_fail_memory
 	
 	movl $1, %eax
 	movl $0, %ebx

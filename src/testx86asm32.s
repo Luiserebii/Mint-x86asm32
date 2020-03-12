@@ -144,6 +144,39 @@ test_print_fail:
 	popl %ebp
 	ret
 
+#
+# test_print_fail_memory(const char* title, const char* val, const char* exp, const char* n)
+#
+# This function uses the buffer to print, overwriting
+# its contents.
+# 
+.globl test_print_fail_memory
+.type test_print_fail_memory, @function
+test_print_fail_memory:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Clear the buffer
+	movb $0, buffer
+
+	.equ TEST_PRINT_FAIL_MEMORY_TITLE, 8
+	.equ TEST_PRINT_FAIL_MEMORY_VAL, 12
+	.equ TEST_PRINT_FAIL_MEMORY_EXP, 16
+	.equ TEST_PRINT_FAIL_MEMORY_N, 20
+
+	pushl TEST_PRINT_FAIL_MEMORY_N(%ebp)
+	pushl TEST_PRINT_FAIL_MEMORY_EXP(%ebp)
+	pushl TEST_PRINT_FAIL_MEMORY_VAL(%ebp)
+	pushl TEST_PRINT_FAIL_MEMORY_TITLE(%ebp)
+	pushl $buffer
+
+	call test_write_fail_memory
+	call test_print
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 
 .macro print buffer:req, bytes:req
 	movl $4, %eax
