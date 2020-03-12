@@ -1185,23 +1185,49 @@ _memcmp:
 	pushl %ebp
 	movl %esp, %ebp
 
-	# Load a, b, and n into %eax, %ecx, and %edx
-	# respectively
+	# Load a and b into %eax, %ecx respectively
+	# We can't reserve %edx for n, because we need
+	# a register to hold the comparisons between
+	# the two chars
 	movl 8(%ebp), %eax
 	movl 12(%ebp), %ecx
-	movl 16(%ebp), %edx
+	
+	.equ MEMCMP_N, -4
+	pushl 16(%ebp)
 
 memcmp_for_len:
-	cmpl $0, %edx
+	cmpl $0, MEMCMP_N(%ebp)
 	je memcmp_for_end
 
+	# If *a < *b, -1
+	movl (%eax), %edx
+	cmpl %edx, (%ecx)
+	jle memcmp_if_greater_cmp
+
+	movl $-1, %eax
+	movl %esp, %ebp
+	popl %ebp
+	ret
+
+memcmp_if_greater_cmp:
+	# If *a > *b
+	movl (%eax), %edx
+	cmpl %edx, (%ecx)
+	jge memcmp_for_inc
+
+	movl $1, %eax
+	movl %esp, %ebp
+	popl %ebp
+	ret
 	
 memcmp_for_inc:
-	decl %edx
+	decl MEMCMP_N(%ebp)
 	incl %eax
 	incl %ecx
 
 memcmp_for_end:
-
+	# Return 0
+	movl $0, %eax
+	movl %esp, %ebp
 	popl %ebp
 	ret
