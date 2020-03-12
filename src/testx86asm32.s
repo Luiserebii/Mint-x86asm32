@@ -658,6 +658,55 @@ _strlen_while_s_end:
 	popl %ebp
 	ret
 
+#
+# void strrev(char* s)
+#
+.type _strrev, @function
+_strrev:
+	pushl %ebp
+	movl %esp, %ebp
+
+	.equ STRREV_LEN, -4
+	.equ STRREV_LIM, -8
+	subl $8, %esp	
+
+	movl 8(%ebp), %eax
+	movl %eax, -8(%esp)
+	call _strlen
+	movl %eax, STRREV_LEN(%ebp)
+	
+	# Divide len by 2 and store in lim
+	
+	
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void swap(char* ptr1, char* ptr2)
+#
+# Swaps the content of the two pointers.
+# NOTE: This could probably be better made a macro
+# 
+.type _swap, @function
+_swap:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ebx
+	
+	movb (%eax), %cl
+	movb (%ebx), %dl
+	
+	movb %cl, (%ebx)
+	movb %dl, (%eax) 
+
+	popl %ebp
+	ret
+
+
 #=========
 # itoa
 #=========
