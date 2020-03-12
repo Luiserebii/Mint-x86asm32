@@ -50,13 +50,13 @@ fail_line_0x0:
 	.ascii " tests failing with \0"
 
 fail_line_0x1:
-	.ascii " tests passing.\0"
+	.ascii " tests passing.\n\0"
 
 success_line_0x0:
 	.ascii "All tests (\0"
 
 success_line_0x1:
-	.ascii ") passing with no tests failing.\0"
+	.ascii ") passing with no tests failing.\n\0"
 
 space:
 	.ascii " \0"
@@ -568,7 +568,7 @@ test_write_fail_memory:
 	ret
 
 #
-# void test_write_fail_line(char* buffer, const char* pass, const char* fail)
+# void test_write_fail_line(char* buffer, const char* fail, const char* pass)
 #
 .globl test_write_fail_line
 .type test_write_fail_line, @function
@@ -577,10 +577,32 @@ test_write_fail_line:
 	movl %esp, %ebp
 
 	.equ TEST_WRITE_FAIL_LINE_BUFF, 8
-	.equ TEST_WRITE_FAIL_LINE_PASS, 12
-	.equ TEST_WRITE_FAIL_LINE_FAIL, 16
+	.equ TEST_WRITE_FAIL_LINE_FAIL, 12
+	.equ TEST_WRITE_FAIL_LINE_PASS, 16
 	
+	pushl $newline
+	pushl TEST_WRITE_FAIL_LINE_BUFF(%ebp)
+	call _strcat
 	
+	movl $fail, 4(%esp)
+	call _strcat
+	
+	movl $space, 4(%esp)
+	call _strcat
+	
+	movl TEST_WRITE_FAIL_LINE_FAIL(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+
+	movl $fail_line_0x0, 4(%esp)
+	call _strcat
+
+	movl TEST_WRITE_FAIL_LINE_PASS(%ebp), %eax
+	movl %eax, 4(%esp)
+	call _strcat
+	
+	movl $fail_line_0x1, 4(%esp)
+	call _strcat
 
 	movl %ebp, %esp
 	popl %ebp
