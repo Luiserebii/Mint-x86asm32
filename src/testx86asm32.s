@@ -668,16 +668,48 @@ _strrev:
 
 	.equ STRREV_LEN, -4
 	.equ STRREV_LIM, -8
-	subl $8, %esp	
+	.equ STRREV_I, -12
+	subl $12, %esp	
 
 	movl 8(%ebp), %eax
-	movl %eax, -8(%esp)
+	movl %eax, -12(%esp)
 	call _strlen
 	movl %eax, STRREV_LEN(%ebp)
 	
 	# Divide len by 2 and store in lim
+	movl $0, %edx
+	movl $2, %ecx
+	divl %ecx
+	movl %eax, STRREV_LIM(%ebp)
+
+	# Initialize i of for loop
+	movl $0, STRREV_I(%ebp)
+
+strrev_for:
+	# i < lim
+	movl STRREV_I(%ebp), %eax
+	cmpl STRREV_LIM(%ebp), %eax
+	jge strrev_for_end
 	
-	
+	# Swap s + i and s - i - 1
+	# Using %ecx for s + i
+	# Using %edx for s - i - 1
+	movl 8(%ebp), %ecx
+	movl %ecx, %edx
+
+	addl %eax, %ecx
+	subl %eax, %edx
+	subl $1, %edx
+
+	pushl %ecx
+	pushl %edx
+	call _swap	
+
+strrev_for_inc:
+	incl STRREV_I(%ebp)
+	jmp strrev_for
+
+strrev_for_end:
 
 	movl %ebp, %esp
 	popl %ebp
