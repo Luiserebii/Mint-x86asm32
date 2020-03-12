@@ -25,6 +25,15 @@ fail_info_0x1:
 fail_info_0x2:
 	.ascii "\"\n\0"
 
+fail_info_bool_true_0x0:
+	.ascii ": Expected true, found false (\"\0"
+
+fail_info_bool_false_0x0:
+	.ascii ": Expected false, found true (\"\0"
+
+fail_info_bool_0x0:
+	.ascii "\")\n\0"
+
 fail_mem_info_0x1:
 	.ascii "\" on \0"
 
