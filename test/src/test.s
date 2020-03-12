@@ -71,6 +71,18 @@ _start:
 	pushl $t_val
 	pushl $t_title
 	call test_print_fail_memory
+
+	pushl $divider
+	call test_print	
+
+	# Test assert functions
+	pushl $t_title
+	pushl $1
+	call test_assert
+
+	pushl $t_title
+	pushl $0
+	call test_assert
 	
 	movl $1, %eax
 	movl $0, %ebx

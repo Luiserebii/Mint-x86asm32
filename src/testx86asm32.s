@@ -6,6 +6,9 @@
 	.equ BUFFER_SIZE, 10000
 	.lcomm buffer, BUFFER_SIZE
 
+	.equ BUFFER_MINI_SIZE, 1000
+	.comm buff_m1, BUFFER_SIZE
+
 .section .data
 indent:
 	.ascii "  \0"
@@ -78,9 +81,13 @@ test_assert:
 
 test_assert_if_false:
 	# Logic for false
-	
-	# itoa(cond, buffer, 10)
-	# call test_print_fail_bool_true
+	pushl $buff_m1
+	pushl 8(%ebp)
+	call _itoa
+
+	pushl %eax
+	pushl 12(%ebp)
+	call test_print_fail_bool_true
 
 test_assert_if_end:
 
