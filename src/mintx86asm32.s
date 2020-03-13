@@ -479,7 +479,18 @@ test_assert_equal_memory:
 
 test_assert_equal_memory_ne:
 	
-	# INCOMPLETE: ADD %eax FOR NTH BYTE AND CONV TO HEX
+	# Take %eax for nth byte and convert to hex
+	movl $buff_m1, %ebx
+	movb $'0', (%ebx)
+	movb $'x', 1(%ebx)
+	addl $2, %ebx
+	
+	pushl $16
+	pushl %ebx
+	pushl %eax
+	call _itoa
+	
+	pushl $buff_m1
 	movl $1, %eax
 	pushl buff_memcpy_v(, %eax, 1)
 	movl $0, %eax
