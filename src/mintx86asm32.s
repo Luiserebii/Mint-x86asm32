@@ -497,16 +497,19 @@ test_assert_equal_memory_ne:
 	movl $1, %ebx
 	movb $0, buff_m2(, %ebx, 1)
 
-	movl $2, %ebx
+	movl $1, %ebx
 	movb buff_bin(, %ebx, 1), %al
-	movb %al, buff_m2(, %ebx, 2)
+	movl $2, %ebx
+	movb %al, buff_m2(, %ebx, 1)
 
-	movb $0, buff_m2(, %ebx, 3)	
+	movl $3, %ebx
+	movb $0, buff_m2(, %ebx, 1)	
 	
 	pushl $buff_m1
-	movl $2, %eax
-	pushl buff_m2(, %eax, 1)
-	pushl buff_m2
+	movl $buff_m2, %eax
+	addl $2, %eax
+	pushl %eax
+	pushl $buff_m2
 	pushl 20(%ebp)
 	call test_print_fail_memory
 
