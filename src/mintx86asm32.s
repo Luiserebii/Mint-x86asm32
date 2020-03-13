@@ -489,14 +489,26 @@ test_assert_equal_memory_ne:
 	pushl %ebx
 	pushl %eax
 	call _itoa
+
+	# Stuff buff_bin chars into strs
+	movb buff_bin, %al
+	movb %al, buff_m2
+
+	movl $1, %ebx
+	movb $0, buff_m2(, %ebx, 1)
+
+	movl $2, %ebx
+	movb buff_bin(, %ebx, 1), %al
+	movb %al, buff_m2(, %ebx, 2)
+
+	movb $0, buff_m2(, %ebx, 3)	
 	
 	pushl $buff_m1
-	movl $1, %eax
-	pushl buff_bin(, %eax, 1)
-	movl $0, %eax
-	pushl buff_bin(, %eax, 1)
+	movl $2, %eax
+	pushl buff_m2(, %eax, 1)
+	pushl buff_m2
 	pushl 20(%ebp)
-	call test_print_fail
+	call test_print_fail_memory
 
 test_assert_equal_memory_end:
 	movl %ebp, %esp
@@ -1428,7 +1440,7 @@ memcmp_v_for_len:
 	movb %dl, (%ecx)
 
 	# Move exp char into %edx, shuffle into *(out + 1)	
-	movl 24(%ebp), %edx
+	movl -8(%ebp), %edx
 	movb %dl, 1(%ecx)
 
 	# Calculate return val (nth byte)
