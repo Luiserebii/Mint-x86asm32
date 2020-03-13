@@ -486,9 +486,16 @@ test_assert_equal_memory_ne:
 	pushl %eax
 	call _itoa
 
+	# Prepend 0x into buff_m2 and _m3 for val and exp
+	# NOTE: Should this be a macro?
+	movl $buff_m2, %ebx
+	movb $'0', (%ebx)
+	movb $'x', 1(%ebx)
+	addl $2, %ebx
+
 	# Convert buff_bin bytes into hex
 	pushl $16
-	pushl $buff_m2
+	pushl %ebx
 	# We're stuffing a byte into a long, so
 	# we will have to set %eax to 0 first
 	movl $0, %eax
@@ -496,7 +503,12 @@ test_assert_equal_memory_ne:
 	pushl %eax
 	call _itoa	
 
-	movl $buff_m3, 4(%esp)
+	movl $buff_m3, %ebx
+	movb $'0', (%ebx)
+	movb $'x', 1(%ebx)
+	addl $2, %ebx
+
+	movl %ebx, 4(%esp)
 	movl $1, %eax
 	movb buff_bin(, %eax, 1), %al
 	movl %eax, (%esp)
