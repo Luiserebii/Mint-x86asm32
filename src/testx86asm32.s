@@ -1205,7 +1205,7 @@ memcmp_for_len:
 	jle memcmp_if_greater_cmp
 
 	movl $-1, %eax
-	movl %esp, %ebp
+	movl %ebp, %esp
 	popl %ebp
 	ret
 
@@ -1216,7 +1216,7 @@ memcmp_if_greater_cmp:
 	jge memcmp_for_inc
 
 	movl $1, %eax
-	movl %esp, %ebp
+	movl %ebp, %esp
 	popl %ebp
 	ret
 	
@@ -1225,9 +1225,11 @@ memcmp_for_inc:
 	incl %eax
 	incl %ecx
 
+	jmp memcmp_for_len
+
 memcmp_for_end:
 	# Return 0
 	movl $0, %eax
-	movl %esp, %ebp
+	movl %ebp, %esp
 	popl %ebp
 	ret
