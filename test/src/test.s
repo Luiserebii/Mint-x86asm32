@@ -158,6 +158,8 @@ _start:
 	pushl $t_str1
 	call test_assert_equal_memory
 
+	call test_end
+
 	# More util testing	
 	pushl $3
 	pushl $t_str0

@@ -549,6 +549,52 @@ test_assert_equal_memory_end:
 	popl %ebp
 	ret
 
+#
+# int test_end()
+#
+# Finishes up the tests by printing a final line summarizing the
+# test results. Returns an appropriate exit code.
+#
+.globl test_end
+.type test_end, @function
+test_end:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Branch depending on whether test_f is 0
+	cmpl $0, test_f
+	jne test_end_fail
+	
+	pushl $10
+	pushl $buff_m1
+	pushl test_s
+	call _itoa
+
+	# Just push the stack up, we have our buffer lined up for
+	# this call
+	addl $4, %esp
+	call test_print_success_line
+
+	jmp test_end_end
+
+test_end_fail:
+	pushl $10
+	pushl $buff_m1
+	pushl test_f
+	call _itoa
+	
+	movl $buff_m2, -8(%ebp)
+	movl test_s, -12(%ebp)
+	call _itoa
+
+	addl $4, %esp
+	pushl $buff_m1
+	call test_print_fail_line
+
+test_end_end:
+	movl %ebp, %esp
+	popl %ebp
+	ret
 
 # ================================================
 #                 WRITE FUNCTIONS
