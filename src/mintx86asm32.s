@@ -561,13 +561,13 @@ test_end:
 	pushl %ebp
 	movl %esp, %ebp
 	
-	# Branch depending on whether test_f is 0
-	cmpl $0, test_f
+	# Branch depending on whether num_f is 0
+	cmpl $0, num_f
 	jne test_end_fail
 	
 	pushl $10
 	pushl $buff_m1
-	pushl test_s
+	pushl num_s
 	call _itoa
 
 	# Just push the stack up, we have our buffer lined up for
@@ -580,11 +580,12 @@ test_end:
 test_end_fail:
 	pushl $10
 	pushl $buff_m1
-	pushl test_f
+	pushl num_f
 	call _itoa
 	
 	movl $buff_m2, -8(%ebp)
-	movl test_s, -12(%ebp)
+	movl num_s, %eax
+	movl %eax, -12(%ebp)
 	call _itoa
 
 	addl $4, %esp
