@@ -1,4 +1,6 @@
 # Mint-x86asm32
+![GitHub](https://img.shields.io/github/license/Luiserebii/Mint-x86asm32?color=222222)
+
 A minimal test framework for x86 ASM (32-bit).
 
 ## Usage
@@ -8,17 +10,16 @@ test_assert(int32_t cond, char* title)
 test_assert_true(int32_t cond, char* title)
 test_assert_false(int32_t cond, char* title)
 
-test_assert_equal(int32_t val, int32_t exp, char* title) [default to 32-bit]
-test_assert_equal_uint(int32_t val, int32_t exp, char* title) [default to 32-bit]
-test_assert_equal_bin(int32_t val, int32_t exp, char* title) [default to 32-bit]
-test_assert_equal_oct(int32_t val, int32_t exp, char* title) [default to 32-bit]
-test_assert_equal_hex(int32_t val, int32_t exp, char* title) [default to 32-bit]
-^ These all compare 32-bit values, but the printing of expected/found values differ based on the function used
+test_assert_equal(int32_t val, int32_t exp, char* title)
+test_assert_equal_uint(int32_t val, int32_t exp, char* title)
+test_assert_equal_bin(int32_t val, int32_t exp, char* title)
+test_assert_equal_oct(int32_t val, int32_t exp, char* title)
+test_assert_equal_hex(int32_t val, int32_t exp, char* title)
 
-//These have not been implemented yet
-test_assert_equal_memory(void* ptr, void* exp, int32_t el, char* title)
 test_assert_equal_string(char* s, char* exp, char* title)
 test_assert_equal_string_len(char* s, char* exp, int32_t len, char* title)
+test_assert_equal_memory(void* ptr, void* exp, int32_t el, char* title)
+
 test_end()
 ```
 
