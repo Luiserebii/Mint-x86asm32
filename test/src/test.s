@@ -139,6 +139,10 @@ _start:
 	pushl $t_str2
 	call _memcmp
 
+	pushl $hello_world
+	pushl $t_str2
+	call _strcmp
+
 	movl $1, %eax
 	movl $0, %ebx
 	int $0x80

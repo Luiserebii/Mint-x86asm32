@@ -1174,6 +1174,85 @@ itoa_while_not_zero_end:
 	ret
 
 #
+# int strcmp(char* a, char* b)
+#
+# Iterates through a and b until \0 is found,
+# returning -1 if a < b, 1 if a > b, or 0 if a == b.
+#
+# NOTE: There is a more efficient way to implement this
+# that saves on the double conditionals, this can be improved
+#
+.globl _strcmp
+.type _strcmp, @function
+_strcmp: 
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Load a and b into %eax, %ecx respectively
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+	
+strcmp_for_len:
+	# This section is worthy of anaylsis due to &&
+	# I wrote it intuitively, but it's not obvious to me
+	# by the way I typically write conditionals in ASM
+	# why this is
+	#
+	# (*a != 0 && *b != 0) == !(*a == 0 || *b == 0)
+	cmpl $0, (%eax)
+	jne strcmp_cond_cont
+
+	cmpl $0, (%ecx)
+	jne strcmp_cond_cont
+	jmp strcmp_for_end
+
+strcmp_cond_cont:
+
+	# If *a < *b, -1
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
+	jle strcmp_if_greater_cmp
+
+	movl $-1, %eax
+	popl %ebp
+	ret
+
+strcmp_if_greater_cmp:
+	# If *a > *b
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
+	jge strcmp_for_inc
+
+	movl $1, %eax
+	popl %ebp
+	ret
+	
+strcmp_for_inc:
+	incl %eax
+	incl %ecx
+
+	jmp strcmp_for_len
+
+strcmp_for_end:
+	# Return 0
+	movl $0, %eax
+	popl %ebp
+	ret
+
+
+#
+# int strncmp(char* a, char* b, int32_t n)
+#
+# Iterates through the ranges [a, a + n) and [b, b + n),
+# returning -1 if a < b, 1 if a > b, or 0 if a == b.
+#
+# Alias of memcmp, the same functionality really. 
+#
+.macro _strncmp
+_memcmp
+.endm
+
+#
 # int memcmp(void* a, void* b, int32_t n)
 #
 # Iterates through the ranges [a, a + n) and [b, b + n),
