@@ -464,7 +464,7 @@ test_assert_equal_memory:
 
 	# Compare with memcpy_v
 	pushl 16(%ebp)
-	pushl $buff_memcpy_v
+	pushl $buff_bin
 	pushl 8(%ebp)
 	pushl 12(%ebp)
 	call _memcmp_v
@@ -492,9 +492,9 @@ test_assert_equal_memory_ne:
 	
 	pushl $buff_m1
 	movl $1, %eax
-	pushl buff_memcpy_v(, %eax, 1)
+	pushl buff_bin(, %eax, 1)
 	movl $0, %eax
-	pushl buff_memcpy_v(, %eax, 1)
+	pushl buff_bin(, %eax, 1)
 	pushl 20(%ebp)
 	call test_print_fail
 
@@ -1425,11 +1425,11 @@ memcmp_v_for_len:
 	# We only have 3 registers, so save expected char onto stack
 	pushl (%ecx)
 	movl 16(%ebp), %ecx
-	movb $dl, (%ecx)
+	movb %dl, (%ecx)
 
 	# Move exp char into %edx, shuffle into *(out + 1)	
 	movl 24(%ebp), %edx
-	movb $dl, 1(%ecx)
+	movb %dl, 1(%ecx)
 
 	# Calculate return val (nth byte)
 	movl 20(%ebp), %eax
