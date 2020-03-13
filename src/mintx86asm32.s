@@ -24,6 +24,8 @@
 	.equ BUFFER_MINI_SIZE, 1000
 	.lcomm buff_m1, BUFFER_MINI_SIZE
 	.lcomm buff_m2, BUFFER_MINI_SIZE
+	
+	.lcomm buff_bin, 2
 
 .section .data
 itoa_lookup_table:
@@ -1334,6 +1336,89 @@ strcmp_for_end:
 .macro _strncmp
 _memcmp
 .endm
+
+#
+# int memcmp_v(void* val, void* exp, void* out, int32_t n)
+#
+# Iterates through the ranges [a, a + n) and [b, b + n),
+# returning -1 if a < b, 1 if a > b, or 0 if a == b.
+# 
+# val is mapped to a, and exp is mapped to b in this description.
+#
+# If -1 or 1 is returned, then the found byte is written to
+# *out, whereas the expected char is written to *(out + 1)
+.globl _memcmp_v
+.type _memcmp_v, @function
+_memcmp_v: 
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Load a and b into %eax, %ecx respectively
+	# We can't reserve %edx for n, because we need
+	# a register to hold the comparisons between
+	# the two chars
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+	
+	.equ MEMCMP_V_N, -4
+	pushl 20(%ebp)
+
+memcmp_v_for_len:
+	cmpl $0, MEMCMP_V_N(%ebp)
+	je memcmp_v_for_end
+
+	# If *a < *b, -1
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
+	jle memcmp_v_if_greater_cmp
+
+	# We only have 3 registers, so save expected char onto stack
+	pushl (%ecx)
+	movl 16(%ebp), %ecx
+	movb $dl, (%ecx)
+
+	# Move exp char into %edx, shuffle into *(out + 1)	
+	movl 24(%ebp), %edx
+	movb $dl, 1(%ecx)
+
+	movl $-1, %eax
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+memcmp_v_if_greater_cmp:
+	# If *a > *b
+	movb (%eax), %dl
+	cmpb %dl, (%ecx)
+	jge memcmp_v_for_inc
+
+	# We only have 3 registers, so save expected char onto stack
+	pushl (%ecx)
+	movl 16(%ebp), %ecx
+	movb $dl, (%ecx)
+
+	# Move exp char into %edx, shuffle into *(out + 1)	
+	movl 24(%ebp), %edx
+	movb $dl, 1(%ecx)
+
+	movl $1, %eax
+	movl %ebp, %esp
+	popl %ebp
+	ret
+	
+memcmp_v_for_inc:
+	decl MEMCMP_V_N(%ebp)
+	incl %eax
+	incl %ecx
+
+	jmp memcmp_v_for_len
+
+memcmp_v_for_end:
+	# Return 0
+	movl $0, %eax
+	movl %ebp, %esp
+	popl %ebp
+	ret
 
 #
 # int memcmp(void* a, void* b, int32_t n)

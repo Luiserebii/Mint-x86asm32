@@ -134,6 +134,18 @@ _start:
 	pushl $t_str1
 	call test_assert_equal_string
 
+	pushl $t_title
+	pushl $2
+	pushl $t_str0
+	pushl $t_str1
+	call test_assert_equal_string_len
+
+	pushl $t_title
+	pushl $3
+	pushl $t_str0
+	pushl $t_str1
+	call test_assert_equal_string_len
+
 	# More util testing	
 	pushl $3
 	pushl $t_str0
