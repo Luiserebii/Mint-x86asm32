@@ -24,6 +24,7 @@
 	.equ BUFFER_MINI_SIZE, 1000
 	.lcomm buff_m1, BUFFER_MINI_SIZE
 	.lcomm buff_m2, BUFFER_MINI_SIZE
+	.lcomm buff_m3, BUFFER_MINI_SIZE
 	
 	.lcomm buff_bin, 2
 
@@ -479,36 +480,30 @@ test_assert_equal_memory:
 
 test_assert_equal_memory_ne:
 	
-	# Take %eax for nth byte and convert to hex
-	movl $buff_m1, %ebx
-	movb $'0', (%ebx)
-	movb $'x', 1(%ebx)
-	addl $2, %ebx
-	
-	pushl $16
-	pushl %ebx
+	# Take %eax for nth byte and make into str
+	pushl $10
+	pushl $buff_m1
 	pushl %eax
 	call _itoa
 
-	# Stuff buff_bin chars into strs
+	# Convert buff_bin bytes into hex
+	pushl $16
+	pushl $buff_m2
+	# We're stuffing a byte into a long, so
+	# we will have to set %eax to 0 first
+	movl $0, %eax
 	movb buff_bin, %al
-	movb %al, buff_m2
-
-	movl $1, %ebx
-	movb $0, buff_m2(, %ebx, 1)
-
-	movl $1, %ebx
-	movb buff_bin(, %ebx, 1), %al
-	movl $2, %ebx
-	movb %al, buff_m2(, %ebx, 1)
-
-	movl $3, %ebx
-	movb $0, buff_m2(, %ebx, 1)	
-	
-	pushl $buff_m1
-	movl $buff_m2, %eax
-	addl $2, %eax
 	pushl %eax
+	call _itoa	
+
+	movl $buff_m3, 4(%esp)
+	movl $1, %eax
+	movb buff_bin(, %eax, 1), %al
+	movl %eax, (%esp)
+	call _itoa
+
+	pushl $buff_m1
+	pushl $buff_m3
 	pushl $buff_m2
 	pushl 20(%ebp)
 	call test_print_fail_memory
