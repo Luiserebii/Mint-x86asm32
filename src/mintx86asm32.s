@@ -32,6 +32,12 @@
 itoa_lookup_table:
 	.byte '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 
+num_s:
+	.long 0
+
+num_f:
+	.long 0
+
 indent:
 	.ascii "  \0"
 
@@ -109,12 +115,14 @@ test_assert:
 	je test_assert_if_false
 
 	# Logic for true
+	incl num_s
 	pushl 12(%ebp)
 	call test_print_success
 	jmp test_assert_if_end
 
 test_assert_if_false:
 	# Logic for false
+	incl num_f
 	pushl $10
 	pushl $buff_m1
 	pushl 8(%ebp)
@@ -160,12 +168,14 @@ test_assert_false:
 	jne test_assert_false_if_true
 
 	# Logic for false
+	incl num_s
 	pushl 12(%ebp)
 	call test_print_success
 	jmp test_assert_false_if_end
 
 test_assert_false_if_true:
 	# Logic for true
+	incl num_f
 	pushl $10
 	pushl $buff_m1
 	pushl 8(%ebp)
@@ -205,12 +215,14 @@ test_assert_equal_uint:
 	jne test_assert_equal_uint_ne
 
 	# It's equal, so write success
+	incl num_s
 	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_uint_end
 
 test_assert_equal_uint_ne:
 
+	incl num_f
 	# Convert both exp and val to char* and store into mini-buffers
 	pushl $10
 	pushl $buff_m1
@@ -249,12 +261,14 @@ test_assert_equal_bin:
 	jne test_assert_equal_bin_ne
 
 	# It's equal, so write success
+	incl num_s
 	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_bin_end
 
 test_assert_equal_bin_ne:
 
+	incl num_f
 	# Convert both exp and val to char* and store into mini-buffers
 	pushl $2
 	pushl $buff_m1
@@ -293,12 +307,14 @@ test_assert_equal_hex:
 	jne test_assert_equal_hex_ne
 
 	# It's equal, so write success
+	incl num_s
 	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_hex_end
 
 test_assert_equal_hex_ne:
-
+	
+	incl num_f
 	# Convert both exp and val to char* and store into mini-buffers
 	# Prepend each buffer with a 0x
 	movl $buff_m1, %eax
@@ -349,12 +365,14 @@ test_assert_equal_oct:
 	jne test_assert_equal_oct_ne
 
 	# It's equal, so write success
+	incl num_s
 	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_oct_end
 
 test_assert_equal_oct_ne:
 
+	incl num_f
 	# Convert both exp and val to char* and store into mini-buffers
 	# Prepend each buffer with a 0
 	movl $buff_m1, %eax
@@ -405,11 +423,13 @@ test_assert_equal_string:
 	cmpl $0, %eax
 	jne test_assert_equal_string_ne
 
+	incl num_s
 	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_string_end
 
 test_assert_equal_string_ne:
+	incl num_f
 	pushl 12(%ebp)
 	pushl 8(%ebp)
 	pushl 16(%ebp)
@@ -439,11 +459,13 @@ test_assert_equal_string_len:
 	cmpl $0, %eax
 	jne test_assert_equal_string_len_ne
 
+	incl num_s
 	pushl 20(%ebp)
 	call test_print_success
 	jmp test_assert_equal_string_len_end
 
 test_assert_equal_string_len_ne:
+	incl num_f
 	pushl 12(%ebp)
 	pushl 8(%ebp)
 	pushl 20(%ebp)
@@ -466,20 +488,22 @@ test_assert_equal_memory:
 	# Compare with memcpy_v
 	pushl 16(%ebp)
 	pushl $buff_bin
-	pushl 8(%ebp)
 	pushl 12(%ebp)
+	pushl 8(%ebp)
 	call _memcmp_v
 
 	# Branch depending on %eax
 	cmpl $0, %eax
 	jne test_assert_equal_memory_ne
 
+	incl num_s
 	pushl 20(%ebp)
 	call test_print_success
 	jmp test_assert_equal_memory_end
 
 test_assert_equal_memory_ne:
-	
+	incl num_f
+
 	# Take %eax for nth byte and make into str
 	pushl $10
 	pushl $buff_m1
