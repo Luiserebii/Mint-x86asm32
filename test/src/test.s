@@ -123,7 +123,18 @@ _start:
 	call test_assert_equal_bin
 	call test_assert_equal_oct
 	call test_assert_equal_hex
-	
+
+	pushl $t_title
+	pushl $t_str0
+	pushl $t_str0
+	call test_assert_equal_string
+
+	pushl $t_title
+	pushl $t_str0
+	pushl $t_str1
+	call test_assert_equal_string
+
+	# More util testing	
 	pushl $3
 	pushl $t_str0
 	pushl $t_str0
@@ -142,6 +153,7 @@ _start:
 	pushl $hello_world
 	pushl $t_str2
 	call _strcmp
+
 
 	movl $1, %eax
 	movl $0, %ebx

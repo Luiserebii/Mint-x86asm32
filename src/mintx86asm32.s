@@ -402,7 +402,7 @@ test_assert_equal_string:
 	cmpl $0, %eax
 	jne test_assert_equal_string_ne
 
-	pushl $title
+	pushl 16(%ebp)
 	call test_print_success
 	jmp test_assert_equal_string_end
 
@@ -426,17 +426,17 @@ test_assert_equal_string_len:
         pushl %ebp
         movl %esp, %ebp
 
-	# Compare with strcmp
+	# Compare with strncmp (change to _strncmp by shifting macro higher)
 	pushl 16(%ebp)
 	pushl 8(%ebp)
 	pushl 12(%ebp)
-	call _strncmp
+	call _memcmp
 
 	# Branch depending on %eax
 	cmpl $0, %eax
 	jne test_assert_equal_string_len_ne
 
-	pushl $title
+	pushl 20(%ebp)
 	call test_print_success
 	jmp test_assert_equal_string_len_end
 
