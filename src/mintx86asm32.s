@@ -453,6 +453,45 @@ test_assert_equal_string_len_end:
 	popl %ebp
 	ret
 
+#
+# void test_assert_equal_memory(char* val, char* exp, int32_t n, char* title)
+#
+.globl test_assert_equal_memory
+.type test_assert_equal_memory, @function
+test_assert_equal_memory:
+        pushl %ebp
+        movl %esp, %ebp
+
+	# Compare with memcpy_v
+	pushl 16(%ebp)
+	pushl $buff_memcpy_v
+	pushl 8(%ebp)
+	pushl 12(%ebp)
+	call _memcmp_v
+
+	# Branch depending on %eax
+	cmpl $0, %eax
+	jne test_assert_equal_memory_ne
+
+	pushl 20(%ebp)
+	call test_print_success
+	jmp test_assert_equal_memory_end
+
+test_assert_equal_memory_ne:
+	
+	# INCOMPLETE: ADD %eax FOR NTH BYTE AND CONV TO HEX
+	movl $1, %eax
+	pushl buff_memcpy_v(, %eax, 1)
+	movl $0, %eax
+	pushl buff_memcpy_v(, %eax, 1)
+	pushl 20(%ebp)
+	call test_print_fail
+
+test_assert_equal_memory_end:
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 
 # ================================================
 #                 WRITE FUNCTIONS
@@ -1341,19 +1380,19 @@ _memcmp
 # int memcmp_v(void* val, void* exp, void* out, int32_t n)
 #
 # Iterates through the ranges [a, a + n) and [b, b + n),
-# returning -1 if a < b, 1 if a > b, or 0 if a == b.
+# returning the nth byte at which the difference was found,
+# 0 otherwise (if the memory segments are equal).
 # 
-# val is mapped to a, and exp is mapped to b in this description.
-#
 # If -1 or 1 is returned, then the found byte is written to
 # *out, whereas the expected char is written to *(out + 1)
+#
 .globl _memcmp_v
 .type _memcmp_v, @function
 _memcmp_v: 
 	pushl %ebp
 	movl %esp, %ebp
 
-	# Load a and b into %eax, %ecx respectively
+	# Load val and exp into %eax, %ecx respectively
 	# We can't reserve %edx for n, because we need
 	# a register to hold the comparisons between
 	# the two chars
@@ -1367,10 +1406,10 @@ memcmp_v_for_len:
 	cmpl $0, MEMCMP_V_N(%ebp)
 	je memcmp_v_for_end
 
-	# If *a < *b, -1
+	# If *val != *exp,
 	movb (%eax), %dl
 	cmpb %dl, (%ecx)
-	jle memcmp_v_if_greater_cmp
+	je memcmp_v_if_eq
 
 	# We only have 3 registers, so save expected char onto stack
 	pushl (%ecx)
@@ -1381,30 +1420,14 @@ memcmp_v_for_len:
 	movl 24(%ebp), %edx
 	movb $dl, 1(%ecx)
 
-	movl $-1, %eax
+	# Calculate return val (nth byte)
+	movl 20(%ebp), %eax
+	subl MEMCMP_V_N(%ebp), %eax
 	movl %ebp, %esp
 	popl %ebp
 	ret
 
-memcmp_v_if_greater_cmp:
-	# If *a > *b
-	movb (%eax), %dl
-	cmpb %dl, (%ecx)
-	jge memcmp_v_for_inc
-
-	# We only have 3 registers, so save expected char onto stack
-	pushl (%ecx)
-	movl 16(%ebp), %ecx
-	movb $dl, (%ecx)
-
-	# Move exp char into %edx, shuffle into *(out + 1)	
-	movl 24(%ebp), %edx
-	movb $dl, 1(%ecx)
-
-	movl $1, %eax
-	movl %ebp, %esp
-	popl %ebp
-	ret
+memcmp_v_if_eq:
 	
 memcmp_v_for_inc:
 	decl MEMCMP_V_N(%ebp)
