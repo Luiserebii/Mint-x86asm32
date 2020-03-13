@@ -1,0 +1,38 @@
+version: 2
+
+aliases:
+  # Alias for any default options
+  - &defaults
+    docker:
+      - image: debian:stretch
+
+jobs:
+  # Test build of the library
+  build:
+    <<: *defaults
+    steps:
+      - run:
+          name: Install as, ld, and make
+          command: apt-get update && apt-get install -y as ld make
+      - checkout
+      - run:
+          name: Build via make
+          command: make
+
+  test:
+    <<: *defaults
+    steps:
+      - run:
+          name: Install as, ld, and make
+          command: apt-get update && apt-get install -y as ld make
+      - checkout
+      - run:
+          name: Run tests
+          command: cd test && make && ./a.out
+
+workflows:
+  version: 2
+  everything:
+    jobs: # For reference, all jobs run in parallel
+      - build
+      - test
