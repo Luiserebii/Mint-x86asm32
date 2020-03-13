@@ -1,5 +1,5 @@
 #
-# test.s
+# mintx86asm32.s
 #
 
 .section .bss

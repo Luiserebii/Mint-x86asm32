@@ -1,14 +1,14 @@
-NAME=testx86asm32
+NAME=mintx86asm32
 ASFLAGS=-g --32
 LDFLAGS=-shared -m elf_i386
 
-main: setup testx86asm32.o link
+main: setup mintx86asm32.o link
 	
 # Attempt creation of build/ folder if non-existing
 setup:
 	mkdir -p build
 
-testx86asm32.o: 
+mintx86asm32.o: 
 	as $(ASFLAGS) src/$(NAME).s -o build/$(NAME).o 
 
 link: 

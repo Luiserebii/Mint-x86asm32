@@ -1,8 +1,8 @@
-# test-x86asm32
+# Mint-x86asm32
 A minimal test framework for x86 ASM (32-bit).
 
 ## Usage
-This library exposes the following functions for use in testing:
+Mint-x86asm32 exposes the following functions for use in testing:
 ```c
 test_assert(int32_t cond, char* title)
 test_assert_true(int32_t cond, char* title)

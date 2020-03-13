@@ -1,4 +1,4 @@
-NAME=testx86asm32
+NAME=mintx86asm32
 ASFLAGS=-g --32
 LDFLAGS=-m elf_i386
 
