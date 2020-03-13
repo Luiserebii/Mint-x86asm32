@@ -1,6 +1,21 @@
-#
-# mintx86asm32.s
-#
+/**
+ * mintx86asm32.s of Mint-x86asm32.
+ *
+ * Copyright (C) 2020 Luiserebii
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 .section .bss
 	.equ BUFFER_SIZE, 10000
@@ -368,6 +383,74 @@ test_assert_equal_oct_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+#
+# void test_assert_equal_string(char* val, char* exp, char* title)
+#
+.globl test_assert_equal_string
+.type test_assert_equal_string, @function
+test_assert_equal_string:
+        pushl %ebp
+        movl %esp, %ebp
+
+	# Compare with strcmp
+	pushl 8(%ebp)
+	pushl 12(%ebp)
+	call _strcmp
+
+	# Branch depending on %eax
+	cmpl $0, %eax
+	jne test_assert_equal_string_ne
+
+	pushl $title
+	call test_print_success
+	jmp test_assert_equal_string_end
+
+test_assert_equal_string_ne:
+	pushl 12(%ebp)
+	pushl 8(%ebp)
+	pushl 16(%ebp)
+	call test_print_fail
+
+test_assert_equal_string_end:
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
+#
+# void test_assert_equal_string_len(char* val, char* exp, int32_t n, char* title)
+#
+.globl test_assert_equal_string_len
+.type test_assert_equal_string_len, @function
+test_assert_equal_string_len:
+        pushl %ebp
+        movl %esp, %ebp
+
+	# Compare with strcmp
+	pushl 16(%ebp)
+	pushl 8(%ebp)
+	pushl 12(%ebp)
+	call _strncmp
+
+	# Branch depending on %eax
+	cmpl $0, %eax
+	jne test_assert_equal_string_len_ne
+
+	pushl $title
+	call test_print_success
+	jmp test_assert_equal_string_len_end
+
+test_assert_equal_string_len_ne:
+	pushl 12(%ebp)
+	pushl 8(%ebp)
+	pushl 20(%ebp)
+	call test_print_fail
+
+test_assert_equal_string_len_end:
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 
 # ================================================
 #                 WRITE FUNCTIONS
