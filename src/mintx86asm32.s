@@ -575,6 +575,9 @@ test_end:
 	addl $4, %esp
 	call test_print_success_line
 
+	# Return 0 exit code
+	movl $0, %eax	
+
 	jmp test_end_end
 
 test_end_fail:
@@ -591,6 +594,9 @@ test_end_fail:
 	addl $4, %esp
 	pushl $buff_m1
 	call test_print_fail_line
+
+	# Return number of tests failed in exit code
+	movl num_f, %eax
 
 test_end_end:
 	movl %ebp, %esp

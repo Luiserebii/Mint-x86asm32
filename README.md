@@ -1,5 +1,6 @@
 # Mint-x86asm32
 ![GitHub](https://img.shields.io/github/license/Luiserebii/Mint-x86asm32?color=222222)
+[![CircleCI](https://circleci.com/gh/Luiserebii/Mint-x86asm32.svg?style=svg)](https://circleci.com/gh/Luiserebii/Mint-x86asm32)
 
 A minimal test framework for x86 ASM (32-bit).
 
