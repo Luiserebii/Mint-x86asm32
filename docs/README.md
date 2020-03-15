@@ -4,7 +4,7 @@ This section contains documentation on using the Mint test framework. Each funct
 
 Running an assertion function causes a line to print to the standard output stream describing the success or failure of the assertion.
 
-## Testing Boolean Value
+## Booleans
 
 The functions below assert a particular boolean value, which parallels the way expressions are evaluated and determine the behavior of control structures in C (i.e. `true` as non-zero and `false` otherwise).
 
@@ -20,7 +20,7 @@ Asserts `cond` as true.
 
 Asserts `cond` as false.
 
-## Testing Integer Equality
+## Integers
 
 The functions below assert integer values, testing the equality of a value (`val`) against an expected value (`exp`). All of these functions perform the same logic in equality, but differ in terms of the formatting of the values when printing them on failure.
 
@@ -44,4 +44,22 @@ Asserts the equality of `val` to `exp`. On failure, prints integers in octal.
 
 Asserts the equality of `val` to `exp`. On failure, prints integers in hexadecimal.
 
+## Strings
 
+The functions below assert string values, or `char` arrays, testing the equality of the values in a string (`s`) against an expected string (`exp`).
+
+#### test\_assert\_equal\_string(char\* s, char\* exp, char\* title)
+
+Assert the equality of `s` to `exp`.
+
+#### test\_assert\_equal\_string\_len(char\* s, char\* exp, int32\_t n, char\* title)
+
+Assert the equality of the first `n` chars from both `s` and `exp`. In other words, the equality of the values in the range [a, a + n) and [b, b + n) is asserted.
+
+## Memory
+
+This function asserts the equality of values along two regions of memory, comparing them byte-by-byte. If an unexpected byte is found, the index of the byte is printed alongside the byte expected, and the byte found.
+
+#### test\_assert\_equal\_memory(void\* ptr, void\* exp, int32\_t n, char\* title)
+
+Assert the equality of the first `n` bytes from both `ptr` and `exp`. In other words, the equality of the values in the range [a, a + n) and [b, b + n) is asserted.
