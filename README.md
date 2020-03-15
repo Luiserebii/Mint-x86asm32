@@ -26,8 +26,8 @@ test_assert_equal_oct(int32_t val, int32_t exp, char* title)
 test_assert_equal_hex(int32_t val, int32_t exp, char* title)
 
 test_assert_equal_string(char* s, char* exp, char* title)
-test_assert_equal_string_len(char* s, char* exp, int32_t len, char* title)
-test_assert_equal_memory(void* ptr, void* exp, int32_t el, char* title)
+test_assert_equal_string_len(char* s, char* exp, int32_t n, char* title)
+test_assert_equal_memory(void* ptr, void* exp, int32_t n, char* title)
 
 test_end()
 ```
@@ -42,17 +42,16 @@ Documentation can be found by checking the [`docs/`](docs) directory.
 The general formatting of each function follows these patterns:
 ```
   [SUCCESS] strlen() returns num
-  [SUCCESS] strlen() returns num
   [FAIL] strlen() returns num: Expected true, found false ("[NUM]")
   [FAIL] isbool() returns true: Expected false, found true ("[NUM]")
   [FAIL] sums are equal: Expected "[NUM]", found "[NUM]"
   [FAIL] sums are equal: Expected "01010", found "01111"
   [FAIL] sums are equal: Expected "0[NUM]", found "0[NUM]"
   [FAIL] sums are equal: Expected "0x[NUM]", found "0x[NUM]"
-  [FAIL] memory arrs are equal: Expected "0x[NUM]" on [N]th byte, found "0x[NUM]"
   [FAIL] strings are equal: Expected "[STR]", found "[STR]"
+  [FAIL] memory arrs are equal: Expected "0x[NUM]" on [N]th byte, found "0x[NUM]"
 
-[FAIL] 8 tests failing with 2 tests passing.
+[FAIL] [NUM] tests failing with [NUM] tests passing.
 [SUCCESS] All tests ([NUM]) passing with no tests failing.
 ```
 For a particular set of test cases, output may look as follows:
