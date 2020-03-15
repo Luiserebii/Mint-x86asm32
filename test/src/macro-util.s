@@ -1,3 +1,4 @@
+# Credits to baldr for this mighty macro: http://www.asmcommunity.net/forums/topic/?id=29732
 .macro stdcall function:req,args:vararg
     argc=0
     .ifnb \args

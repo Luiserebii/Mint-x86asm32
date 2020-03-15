@@ -27,8 +27,14 @@ jobs:
           command: apt-get update && apt-get install -y binutils make
       - checkout
       - run:
-          name: Run tests
+          name: Run main tests
           command: cd test && make && ./a.out
+      - run:
+          name: Run test and assert successful return code
+          command: cd test && make test-n && ./test-1.out
+      - run:
+          name: Run test and assert failing return code
+          command: bash -c "cd test && make test-n && ./test-2.out; if [[ \$? -eq 2 ]]; then exit 0; else exit 1; fi"
 
 workflows:
   version: 2
