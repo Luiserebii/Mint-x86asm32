@@ -75,7 +75,7 @@ string.h
 ```
 
 ## Testing
-Run `make && ./a.out` in the `test/` directory to test, which will run through functions and produce reasonable output.
+Run `make && ./a.out` in the [`test/`](test) directory to test, which will run through functions and produce reasonable output.
 
 ## License
 This code has been licensed under the GNU General Public License v3.0.
