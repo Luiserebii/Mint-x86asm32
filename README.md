@@ -4,8 +4,16 @@
 
 A minimal test framework for x86 ASM (32-bit).
 
+## Installation
+Running `make` will create a `libmintx86asm32.so` library to link against in the `build/` directory. For static linking, `build/` should be populated also with the respective `.o` object files needed.
+
 ## Usage
-Mint-x86asm32 exposes the following functions for use in testing:
+Using Mint is simple. The basic flow of a test program using Mint:
+
+1. Call assertions.
+2. Return with `test_end()` to clean up by calling it and forwarding the return value as the exit code.
+
+Mint exposes the following functions for use in testing:
 ```c
 test_assert(int32_t cond, char* title)
 test_assert_true(int32_t cond, char* title)
@@ -24,6 +32,10 @@ test_assert_equal_memory(void* ptr, void* exp, int32_t el, char* title)
 test_end()
 ```
 This library follows the C calling convention, and each function expects arguments on the stack to process and clean up correctly.
+
+## Documentation
+
+Documentation can be found by checking the [`docs/`](docs) directory.
 
 ## Expected output
 
@@ -61,9 +73,6 @@ string.h
 
 [FAIL] 10 tests failing with 2 tests passing.
 ```
-
-## Building
-Running `make` will create a `.so` library to link against in the `build/` directory. For static linking, `build/` should be populated also with the respective `.o` object files needed.
 
 ## Testing
 Run `make && ./a.out` in the `test/` directory to test, which will run through functions and produce reasonable output.
