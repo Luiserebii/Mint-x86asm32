@@ -8,8 +8,8 @@ title1:
 
 _start:
 	stdcall test_assert_equal_uint $1, $1, $title1
-	stdcall test_assert_equal_uint $1, $1, $title1
-	stdcall test_assert_equal_uint $1, $1, $title1
+	stdcall test_assert_equal_uint $1, $2, $title1
+	stdcall test_assert_equal_uint $1, $4, $title1
 
 	stdcall test_end
 
